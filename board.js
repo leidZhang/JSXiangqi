@@ -1,45 +1,47 @@
-import { General, Chariot, Horse, Elephant, Advisor, Pawn, Cannon } from './pieces'; 
+import { General, Chariot, Horse, Elephant, Advisor, Pawn, Cannon } from './pieces.js'; 
 
-class Board {
+export class Board {
     constructor() {
         this.board = []; // 10 * 9 array
+        this.status = true; // game start 
+        this.curPiece = null; 
     }
 
     initBoard() {
         // create red pieces 
-        let redChariot1 = new Chariot("red", "", 0, 9); 
-        let redHorse1 = new Horse("red", "", 1, 9); 
-        let redElephant1 = new Elephant("red", "", 2, 9); 
-        let redAdvisor1 = new Advisor("red", "", 3, 9); 
-        let redGeneral = new General("red", "", 4, 9); 
-        let redAdvisor2 = new Advisor("red", "", 5, 9); 
-        let redElephant2 = new Elephant("red", "", 6, 9); 
-        let redHorse2 = new Horse("red", "", 7, 9); 
-        let redChariot2 = new Chariot("red", "", 8, 9); 
-        let redCannon1 = new Cannon("red", "", 1, 7); 
-        let redCannon2 = new Cannon("red", "", 7, 7); 
-        let redPawn1 = new Pawn("red", "", 0, 6); 
-        let redPawn2 = new Pawn("red", "", 2, 6); 
-        let redPawn3 = new Pawn("red", "", 4, 6); 
-        let redPawn4 = new Pawn("red", "", 6, 6); 
-        let redPawn5 = new Pawn("red", "", 8, 6); 
+        let redChariot1 = new Chariot(1, "red", "车", 0, 9); 
+        let redHorse1 = new Horse(2, "red", "马", 1, 9); 
+        let redElephant1 = new Elephant(3, "red", "相", 2, 9); 
+        let redAdvisor1 = new Advisor(4, "red", "仕", 3, 9); 
+        let redGeneral = new General(5, "red", "帅", 4, 9); 
+        let redAdvisor2 = new Advisor(6, "red", "仕", 5, 9); 
+        let redElephant2 = new Elephant(7, "red", "相", 6, 9); 
+        let redHorse2 = new Horse(8, "red", "马", 7, 9); 
+        let redChariot2 = new Chariot(9, "red", "车", 8, 9); 
+        let redCannon1 = new Cannon(10, "red", "炮", 1, 7); 
+        let redCannon2 = new Cannon(11, "red", "炮", 7, 7); 
+        let redPawn1 = new Pawn(12, "red", "兵", 0, 6); 
+        let redPawn2 = new Pawn(13, "red", "兵", 2, 6); 
+        let redPawn3 = new Pawn(14, "red", "兵", 4, 6); 
+        let redPawn4 = new Pawn(15, "red", "兵", 6, 6); 
+        let redPawn5 = new Pawn(16, "red", "兵", 8, 6); 
         // create black pieces 
-        let blackChariot1 = new Chariot("black", "", 0, 0); 
-        let blackHorse1 = new Horse("black", "", 1, 0); 
-        let blackElephant1 = new Elephant("black", "", 2, 0); 
-        let blackAdvisor1 = new Advisor("black", "", 3, 0); 
-        let blackGeneral = new General("black", "", 4, 0); 
-        let blackAdvisor2 = new Advisor("black", "", 5, 0); 
-        let blackElephant2 = new Elephant("black", "", 6, 0); 
-        let blackHorse2 = new Horse("black", "", 7, 0); 
-        let blackChariot2 = new Chariot("black", "", 8, 0); 
-        let blackCannon1 = new Cannon("black", "", 1, 2); 
-        let blackCannon2 = new Cannon("black", "", 7, 2); 
-        let blackPawn1 = new Pawn("black", "", 0, 3); 
-        let blackPawn2 = new Pawn("black", "", 2, 3); 
-        let blackPawn3 = new Pawn("black", "", 4, 3); 
-        let blackPawn4 = new Pawn("black", "", 6, 3); 
-        let blackPawn5 = new Pawn("black", "", 8, 3); 
+        let blackChariot1 = new Chariot(17, "black", "車", 0, 0); 
+        let blackHorse1 = new Horse(18, "black", "馬", 1, 0); 
+        let blackElephant1 = new Elephant(19, "black", "象", 2, 0); 
+        let blackAdvisor1 = new Advisor(20, "black", "士", 3, 0); 
+        let blackGeneral = new General(21, "black", "将", 4, 0); 
+        let blackAdvisor2 = new Advisor(22, "black", "士", 5, 0); 
+        let blackElephant2 = new Elephant(23, "black", "象", 6, 0); 
+        let blackHorse2 = new Horse(24, "black", "馬", 7, 0); 
+        let blackChariot2 = new Chariot(25, "black", "車", 8, 0); 
+        let blackCannon1 = new Cannon(26, "black", "砲", 1, 2); 
+        let blackCannon2 = new Cannon(27, "black", "砲", 7, 2); 
+        let blackPawn1 = new Pawn(28, "black", "卒", 0, 3); 
+        let blackPawn2 = new Pawn(29, "black", "卒", 2, 3); 
+        let blackPawn3 = new Pawn(30, "black", "卒", 4, 3); 
+        let blackPawn4 = new Pawn(31, "black", "卒", 6, 3); 
+        let blackPawn5 = new Pawn(32, "black", "卒", 8, 3); 
 
         // generate board
         for (let i=0; i<10; i++) { 
@@ -83,6 +85,10 @@ class Board {
         this.board[4][3] = blackPawn3; 
         this.board[6][3] = blackPawn4; 
         this.board[8][3] = blackPawn5;
+    } 
+
+    recordMove(newCol, newRow) {
+        return "[" + this.curPiece.row + "," + this.curPiece.col + "] -> [" + newRow + "," + newCol + "]"; 
     } 
 
     movePiece(piece, newRow, newCol) { 

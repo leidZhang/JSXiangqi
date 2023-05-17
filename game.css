@@ -1,0 +1,41 @@
+table {
+    margin: 10px;
+    border-collapse: collapse;
+}
+
+table.board {
+    background-color: white;
+}
+
+table,td.board {
+    border: 1px solid black;
+}
+ 
+td {
+    height: 65px;
+    width: 65px;
+}
+ 
+div.pieces {
+    margin: 5px;
+    height: 50px;
+    width: 50px;
+    border: 1px solid black;
+    border-radius: 25px;
+
+    text-align: center;
+    font-family: Cursive;
+    font-size: 2.0em;
+    background-color: #FAF0E6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+div.red {
+    color: red; 
+}
+
+div.black {
+    color: black; 
+}
