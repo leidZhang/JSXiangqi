@@ -1,5 +1,9 @@
 import { Board } from './board.js'; 
 
+const chessboard = new Board(); 
+chessboard.initBoard(); 
+console.log(chessboard.board); 
+
 // set board shape
 (function() {
     window.table = document.createElement("table");
@@ -32,10 +36,11 @@ import { Board } from './board.js';
             var cell = row.insertCell(j);
             cell.setAttribute("data-x",j);
             cell.setAttribute("data-y",i);
-            cell.addEventListener("click",clickBoard,false);
+            cell.addEventListener("click", clickBoard, false);
         }
     }
 
+    table.setAttribute("id", "chessboardContainer"); 
     table.appendChild(tBody);
     table.style.position="absolute";
     table.style.top="50px";
@@ -49,7 +54,7 @@ import { Board } from './board.js';
     beginText.style.display="inline";
     beginText.innerHTML="Game Start";
     beginText.addEventListener("click", function(event){
-        chessboard.init();
+        chessboard.initBoard();
         if(!chessboard.status){
              
         }
@@ -61,7 +66,7 @@ import { Board } from './board.js';
 })(); 
 
 // red turn?
-(function(){
+(function() {
     window.turnText = document.createElement("h1");
     turnText.innerHTML="Red";
     turnText.style.position="absolute";
@@ -72,40 +77,95 @@ import { Board } from './board.js';
 
 // click board
 function clickBoard(event) {
-    if(chessboard.status) {
+    if(chessboard.status) { 
         if(chessboard.curPiece) {
             var x = parseInt(this.getAttribute("data-x"));
             var y = parseInt(this.getAttribute("data-y"));
-            console.log(x + "," + y);  
-            // move piece
-            chessboard.movePiece(chessboard.curPiece, x, y);
+            console.log("now at " + chessboard.curPiece.col + ", " + chessboard.curPiece.row); 
+            console.log("attempting to " + x + ", " + y); 
+            // attempt to move the piece
+            var res = chessboard.movePiece(chessboard.curPiece, x, y);
+            console.log(chessboard.board); 
+            if (res) executeMove(x, y);
         }
         event.stopPropagation();
     } else {
-        // game over
-        event.stopPropagation();
-    }
+        event.stopPropagation(); // stop popup 
+    }     
 }
 
-// select piece
-function choosePiece(event){
-    if(chessboard.status){
-        if(chessboard.turn == !!this.getAttribute("data-team") && !chessboard.curPiece){
-            var x = parseInt(this.parentNode.getAttribute("data-x"));
-            var y = parseInt(this.parentNode.getAttribute("data-y"));
-            // select piece
-            chessboard.curPiece = chessboard.pieces[x][y];
-            chessboard.curPiece.piece.style.backgroundColor="#B0E0E6";
-             
+// choose piece
+function choosePiece(event) {
+    if (chessboard.status) {
+        // select piece
+        var clickedPiece = event.target;
+        console.log(clickedPiece);
+        if (clickedPiece.classList.contains("pieces")) {
+            var x = parseInt(clickedPiece.parentNode.getAttribute("data-x"));
+            var y = parseInt(clickedPiece.parentNode.getAttribute("data-y"));
+            console.log("Current position: " + x + ", " + y); 
+            chessboard.curPiece = chessboard.board[x][y];
+        }
+
+        if (chessboard.turn == clickedPiece.getAttribute("data-color") && chessboard.curPiece) {
+            clickedPiece.style.backgroundColor = "#B0E0E6";
             event.stopPropagation();
         }
     } else {
         event.stopPropagation(); // stop popup
     }
+
+    console.log("select a piece"); 
+    initListeners();
 }
 
-function createPieces(x, y, icon, color) {
+// cancel selection 
+function cancelPiece(event) {
+    var clickedPiece = event.target;
+    var selectedPiece = null; 
+    console.log("cancel: " + clickedPiece);
+
+    if (clickedPiece) {
+        var x = parseInt(clickedPiece.parentNode.getAttribute("data-x"));
+        var y = parseInt(clickedPiece.parentNode.getAttribute("data-y"));
+        selectedPiece = chessboard.board[x][y];
+    }
+
+    if (chessboard.status) {
+        if (chessboard.curPiece.id == selectedPiece.id) {
+            clickedPiece.style.backgroundColor = "#FAF0E6";
+            chessboard.curPiece = null;
+        }
+    }
+
+    console.log("cancel piece");
+    initListeners();
+}
+
+function initListeners() {
+    var divs = document.getElementsByClassName("pieces");
+    for (var i = 0; i < divs.length; i++) {
+        divs[i].removeEventListener("click", choosePiece);
+        divs[i].removeEventListener("click", cancelPiece);
+  
+        if (chessboard.curPiece == null) {
+            divs[i].addEventListener("click", choosePiece, false);
+        } else {
+            divs[i].addEventListener("click", cancelPiece, false);
+        }
+
+        console.log("Current Piece: " + chessboard.curPiece); 
+    }
+}
+
+function executeMove(newRow, newCol) {
+    // execute move
+}
+
+// create pieces
+function createPieces(x, y, icon, color, id) {
     var div = document.createElement("div");
+    div.setAttribute("id", id); 
     div.setAttribute("data-color", color === "red" ? "red" : "black");
     div.classList.add("pieces");
     div.classList.add(color === "red" ? "red" : "black");
@@ -114,14 +174,17 @@ function createPieces(x, y, icon, color) {
     return div;
 }
 
-const chessboard = new Board(); 
-chessboard.initBoard(); 
-console.log(chessboard.board); 
-
-for (let i=0; i<=8; i++) {
-    for (let j=0; j<=9; j++) {
-        var piece = chessboard.board[i][j]; 
-        if (piece == null) continue; 
-        createPieces(i, j, piece.icon, piece.color); 
+function renderBoard() {
+    for (let i=0; i<=8; i++) {
+        for (let j=0; j<=9; j++) {
+            var piece = chessboard.board[i][j]; 
+            if (piece != null) {
+                createPieces(i, j, piece.icon, piece.color, piece.id); 
+            }
+        }
     }
 }
+
+renderBoard(); 
+console.log(chessboard.board); 
+window.addEventListener("load", initListeners);

@@ -3,6 +3,7 @@ import { General, Chariot, Horse, Elephant, Advisor, Pawn, Cannon } from './piec
 export class Board {
     constructor() {
         this.board = []; // 10 * 9 array
+        this.turn = "red"; 
         this.status = true; // game start 
         this.curPiece = null; 
     }
@@ -94,28 +95,31 @@ export class Board {
     movePiece(piece, newRow, newCol) { 
         // check if the piece belongs to the board 
         if (!this.board[piece.row][piece.col] === piece) { 
-            return "Invalid piece"; 
+            return false; 
         }
 
         // check if the new position is within the board 
         if (newRow < 0 || newRow > 9 || newCol < 0 || newCol > 8) { 
-            return "Invalid position"; 
+            return false; 
         }
         
         // check if the piece can move to the new position 
-        if (!piece.validateMove(newCol, newRow, this.board)) { 
-            return "Invalid move"; 
+        console.log("move result: " + piece.validateMove(newRow, newCol, this.board)); 
+        if (!piece.validateMove(newRow, newCol, this.board)) { 
+            return false; 
         }
         
         // update the board 
-        this.board[piece.row][piece.col] = null; 
+        var curRow = piece.row; 
+        var curCol = piece.col; 
+        this.board[curRow][curCol] = null; 
         // remove the piece from the old position 
         this.board[newRow][newCol] = piece; 
         // place the piece on the new position 
         piece.row = newRow; // update the piece’s row 
         piece.col = newCol; // update the piece’s col
         
-        return "Move successful"; 
+        return true; 
     }
 
     isGameOver() { 
