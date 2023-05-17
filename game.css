@@ -32,6 +32,10 @@ div.pieces {
     justify-content: center;
 }
 
+div.pieces:hover {
+    cursor: pointer;
+}
+
 div.red {
     color: red; 
 }

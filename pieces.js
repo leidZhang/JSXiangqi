@@ -8,13 +8,26 @@ class ChessPiece {
         this.row = row;
     }
 
-    checkMove(newCol, newRow, valid, board) {
+    checkMove(newRow, newCol, valid, board) {
         const rowChange = newRow - this.row; 
         const colChange = newCol - this.col; // check position 
+        console.log(valid); 
 
         return valid.some(([validRowChange, validColChange]) => { 
+            console.log(rowChange); 
+            console.log(validRowChange); 
+            console.log(colChange); 
+            console.log(validColChange); 
+
+            console.log(rowChange === validRowChange); 
+            console.log(colChange === validColChange); 
+            console.log(board[newRow][newCol].getColor() != this.color); 
             return rowChange === validRowChange && colChange === validColChange && board[newRow][newCol].getColor() != this.color; 
         }); 
+    }
+
+    getId() {
+        return this.id; 
     }
 
     getColor() {
@@ -24,10 +37,10 @@ class ChessPiece {
 
 export class General extends ChessPiece {
     constructor(id, color, icon, col, row) {
-        super(id, color, "cannon", icon, col, row); 
+        super(id, color, "general", icon, col, row); 
     }
 
-    validAttack(newCol, newRow, board) {
+    validAttack(newRow, newCol, board) {
         attackPos = []; 
 
         if (this.color == "red") {
@@ -57,7 +70,7 @@ export class General extends ChessPiece {
         return (newRow == attackPos[0] && newCol == attackPos[1]); 
     }
 
-    validMove(newCol, newRow, board) {
+    validateMove(newRow, newCol, board) {
         if (this.validAttack(newCol, newRow, board)) return true; // general attack general
 
         valid = [[0,1],[1,0],[-1,0],[0,-1]]; 
@@ -126,7 +139,7 @@ export class Cannon extends ChessPiece {
         return up; 
     }
 
-    validAttack(newCol, newRow, board) {
+    validAttack(newRow, newCol, board) {
         let attackPos = []; 
         // attack left
         const left = this.leftLimit(board); 
@@ -167,27 +180,27 @@ export class Cannon extends ChessPiece {
         });
     }
 
-    validMove(newCol, newRow, board) {
+    validateMove(newRow, newCol, board) {
         let valid = []; 
         
-        const up = this.upperLimit(board); 
+        const up = this.upperLimit(board) + 1; 
         for (let i=up; i<this.row; i++) {
-            valid.push([i-1, this.col]); 
+            valid.push([i, this.col]); 
         }
-        const down = this.downLimit(board); 
+        const down = this.downLimit(board) - 1; 
         for (let i=down; i>this.row; i--) {
-            valid.push([i+1, this.col]); 
+            valid.push([i, this.col]); 
         }
-        const left = this.leftLimit(board); 
+        const left = this.leftLimit(board) + 1; 
         for (let i=left; i<this.col; i++) {
-            valid.push([this.row, i-1]); 
+            valid.push([this.row, i]); 
         }
-        const right = this.rightLimit(board);
+        const right = this.rightLimit(board) - 1;
         for (let i=right; i>this.col; i--) {
-            valid.push([this.row, i+1]); 
+            valid.push([this.row, i]); 
         }
 
-        return this.checkMove(newCol, newRow, valid, board) || this.validAttack(newCol, newRow, board);
+        return this.checkMove(newRow, newCol, valid, board) || this.validAttack(newRow, newCol, board);
     }
 }
 
@@ -196,7 +209,7 @@ export class Advisor extends ChessPiece {
         super(id, color, "advisor", icon, col, row); 
     }
 
-    validateMove(newCol, newRow, board) {
+    validateMove(newRow, newCol, board) {
         let valid = [[1,1],[1,-1],[-1,1],[-1,-1]]; 
         
         if (newCol < 3) return false; // left limit
@@ -204,7 +217,7 @@ export class Advisor extends ChessPiece {
         if (this.color == "red" && newRow < 7) return false; // down limit
         if (this.color == "black" && newRow > 2) return false; // up limit
 
-        return this.checkMove(newCol, newRow, valid, board); 
+        return this.checkMove(newRow, newCol, valid, board); 
     }
 }
 
@@ -213,7 +226,7 @@ export class Elephant extends ChessPiece {
         super(id, color, "elephant", icon, col, row); 
     }
 
-    validateMove(newCol, newRow, board) {
+    validateMove(newRow, newCol, board) {
         let valid = []; 
 
         if (board[this.row-1][this.col-1] == null) { // left down
@@ -237,7 +250,7 @@ export class Elephant extends ChessPiece {
              return false; 
         }
 
-        return this.checkMove(newCol, newRow, valid, board); 
+        return this.checkMove(newRow, newCol, valid, board); 
     } 
 }
 
@@ -294,7 +307,7 @@ export class Chariot extends ChessPiece {
         return up; 
     }
 
-    validateMove(newCol, newRow, board) {
+    validateMove(newRow, newCol, board) {
         let valid = []; 
         
         const up = this.upperLimit(board); 
@@ -314,7 +327,7 @@ export class Chariot extends ChessPiece {
             valid.push([this.row, i]); 
         }
 
-        return this.checkMove(newCol, newRow, valid, board); 
+        return this.checkMove(newRow, newCol, valid, board); 
     }
 }
 
@@ -339,7 +352,7 @@ export class Horse extends ChessPiece {
             valid.push([-1,2],[-1,-2]); 
         }
 
-        return this.checkMove(newCol, newRow, valid, board); 
+        return this.checkMove(newRow, newCol, valid, board); 
     }
 }
 
@@ -351,18 +364,20 @@ export class Pawn extends ChessPiece {
     validateMove(newCol, newRow, board) {
         let valid = []; 
 
-        if (this.color === "red") { 
-            valid.push([0, 1]);
+        if (this.color === "black") { 
+            valid.push([1, 0]);
             if (this.row >= 5) {
-                valid.push([-1, 0], [1, 0]);
+                valid.push([0, -1], [0, 1]);
             }
-        } else {
-            valid[0] = [[0,-1]]; 
+        } 
+        
+        if (this.color === "red") {
+            valid.push([-1, 0]); 
             if (this.row <= 4) {
-                valid.push([-1, 0], [1, 0]);
+                valid.push([0, -1], [0, 1]);
             }
         }
-
-        return this.checkMove(newCol, newRow, valid, board); 
+        
+        return this.checkMove(newRow, newCol, valid, board); 
     }
 }
