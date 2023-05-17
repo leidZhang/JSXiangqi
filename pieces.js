@@ -1,5 +1,6 @@
 class ChessPiece {
-    constructor(color, type, icon, col, row) {
+    constructor(id, color, type, icon, col, row) {
+        this.id = id; 
         this.color = color;
         this.icon = icon;
         this.type = type;
@@ -16,18 +17,14 @@ class ChessPiece {
         }); 
     }
 
-    recordMove(newCol, newRow) {
-        return "["+this.row + "," + this.col + "] -> [" + newRow + "," + newCol + "]"; 
-    } 
-
     getColor() {
         return this.color; 
     }
 }
 
 export class General extends ChessPiece {
-    constructor(color, icon, col, row) {
-        super(color, "cannon", icon, col, row); 
+    constructor(id, color, icon, col, row) {
+        super(id, color, "cannon", icon, col, row); 
     }
 
     validAttack(newCol, newRow, board) {
@@ -77,8 +74,8 @@ export class General extends ChessPiece {
 }
 
 export class Cannon extends ChessPiece {
-    constructor(color, icon, col, row) {
-        super(color, "cannon", icon, col, row); 
+    constructor(id, color, icon, col, row) {
+        super(id, color, "cannon", icon, col, row); 
     }
 
     rightLimit(board) {
@@ -195,8 +192,8 @@ export class Cannon extends ChessPiece {
 }
 
 export class Advisor extends ChessPiece {
-    constructor(color, icon, col, row) {
-        super(color, "advisor", icon, col, row); 
+    constructor(id, color, icon, col, row) {
+        super(id, color, "advisor", icon, col, row); 
     }
 
     validateMove(newCol, newRow, board) {
@@ -212,8 +209,8 @@ export class Advisor extends ChessPiece {
 }
 
 export class Elephant extends ChessPiece {
-    constructor(color, icon, col, row) {
-        super(color, "elephant", icon, col, row); 
+    constructor(id, color, icon, col, row) {
+        super(id, color, "elephant", icon, col, row); 
     }
 
     validateMove(newCol, newRow, board) {
@@ -245,8 +242,8 @@ export class Elephant extends ChessPiece {
 }
 
 export class Chariot extends ChessPiece {
-    constructor(color, icon, col, row) {
-        super(color, "chariot", icon, col, row); 
+    constructor(id, color, icon, col, row) {
+        super(id, color, "chariot", icon, col, row); 
     }
 
     rightLimit(board) {
@@ -322,8 +319,8 @@ export class Chariot extends ChessPiece {
 }
 
 export class Horse extends ChessPiece {
-    constructor(color, icon, col, row) {
-        super(color, "horse", icon, col, row); 
+    constructor(id, color, icon, col, row) {
+        super(id, color, "horse", icon, col, row); 
     }
 
     validateMove(newCol, newRow, board) {
@@ -347,8 +344,8 @@ export class Horse extends ChessPiece {
 }
 
 export class Pawn extends ChessPiece {
-    constructor(color, icon, col, row) {
-        super(color, "pawn", icon, col, row);
+    constructor(id, color, icon, col, row) {
+        super(id, color, "pawn", icon, col, row);
     }
 
     validateMove(newCol, newRow, board) {
