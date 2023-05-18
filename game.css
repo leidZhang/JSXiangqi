@@ -24,7 +24,7 @@ body {
 nav {
     background-color: darkred;
     color: #FAF0E6;
-    height: 90px;
+    height: 100px;
 }
 
 #navleft {
@@ -59,6 +59,10 @@ nav {
 #movesRecords tbody {
     font-size: medium;
     text-align: center;
+}
+
+#movesRecords tbody tr td {
+    height: 30px;
 }
  
 div.pieces {

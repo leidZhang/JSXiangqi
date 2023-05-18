@@ -145,7 +145,7 @@ export class Cannon extends ChessPiece {
         const left = this.leftLimit(board); 
         for (let i=left-1; i>=0; i--) {
             if (board[this.row][i] != null) {
-                attackPos.push([this.col, i]); 
+                attackPos.push([this.row, i]); 
                 break; 
             }
         }
@@ -184,6 +184,8 @@ export class Cannon extends ChessPiece {
         }
         // check position 
         return attackPos.some(([row, col]) => { 
+            console.log(newRow === row); 
+            console.log(newCol === col); 
             return newRow === row && newCol === col; 
         });
     }

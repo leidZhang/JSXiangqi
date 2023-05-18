@@ -74,14 +74,14 @@ console.log(chessboard.board);
     turnText.style.left = "1000px";
     document.body.appendChild(turnText);
 
-    var button = document.createElement("button");
-    button.innerHTML = "Reset Game";
-    button.setAttribute("id", "resetBtn");
-    button.style.position = "absolute";
-    button.style.top = "330px";
-    button.style.left = "1000px";
-    button.addEventListener("click", handleClick);
-    document.body.appendChild(button);
+    var restbtn = document.createElement("button");
+    restbtn.innerHTML = "New Game";
+    restbtn.setAttribute("id", "resetBtn");
+    restbtn.style.position = "absolute";
+    restbtn.style.top = "330px";
+    restbtn.style.left = "1000px";
+    restbtn.addEventListener("click", handleClick);
+    document.body.appendChild(restbtn); 
 
     var movesContainer = document.createElement("div");
     movesContainer.setAttribute("id", "movesContainer");
@@ -165,10 +165,6 @@ function executeMove(newRow, newCol) {
     tgt.appendChild(clickedPiece); 
     clickedPiece.style.backgroundColor = "#FAF0E6"; 
     
-    chessboard.curPiece.row = newRow; 
-    chessboard.curPiece.col = newCol; 
-    chessboard.curPiece = null; 
-
     // switch side
     var res = chessboard.isGameOver(); 
     if (res) {
@@ -181,13 +177,18 @@ function executeMove(newRow, newCol) {
             turnText.innerHTML = "Red Win";
         }
     } else {
-        moveRecord(); 
+        moveRecord(newRow, newCol); 
         switchSide(); 
-        initListeners(); 
     }
+
+    chessboard.curPiece.row = newRow; 
+    chessboard.curPiece.col = newCol; 
+    chessboard.curPiece = null; 
+
+    initListeners(); 
 }
 
-function moveRecord() {
+function moveRecord(newRow, newCol) {
     var moveTable = document.getElementById("movesRecords"); 
     if (chessboard.turn === "red") {
         chessboard.turnCnt++; 
@@ -203,15 +204,87 @@ function moveRecord() {
         blackMoveContainer.setAttribute("class", "blackMove"); 
 
         moveRow.appendChild(turnContainer); 
-        turnContainer.innerHTML += chessboard.turnCnt; 
+        turnContainer.innerHTML = chessboard.turnCnt; 
         moveRow.appendChild(redMoveContainer); 
-        redMoveContainer.innerHTML += "TEMP"; // test red move
         moveRow.appendChild(blackMoveContainer); 
+        
+        genRedRecord(newRow, newCol, redMoveContainer); 
     } else {
         var moveRow = document.querySelector(`[data-turn="${chessboard.turnCnt}"]`); 
         var blackMoveContainer = moveRow.getElementsByClassName("blackMove"); 
-        blackMoveContainer[0].innerHTML = "temp"; // test black move
+        // blackMoveContainer.innerHTML += "temp"; 
+        genBlackRecord(newRow, newCol, blackMoveContainer); 
     }
+}
+
+function genBlackRecord(newRow, newCol, blackMoveContainer) {
+    var curRow = chessboard.curPiece.row; 
+    var curCol = chessboard.curPiece.col; 
+    var curType = chessboard.curPiece.type; 
+    var rowChange = newRow - curRow;  
+    var text = ""; 
+
+    if (curType === "pawn" || curType === "chariot" || curType === "cannon" || curType === "general") {
+        if (curType === "pawn") text += "p";
+        if (curType === "chariot") text += "r"; 
+        if (curType === "cannon") text += "c"; 
+        if (curType === "general") text += "k"; 
+        
+        if (rowChange > 0) {
+            text += curRow + "+" + rowChange; 
+        } else if (rowChange < 0) {
+            text += curRow + "" + rowChange;
+        } else {
+            text += (curCol + 1) + "=" + (newCol + 1); 
+        }
+    } else if (curType === "horse" || curType === "advisor" || curType === "elephant") {
+        if (curType === "horse") text += "n"; 
+        if (curType === "advisor") text += "a"; 
+        if (curType === "elephant") text += "b"; 
+
+        if (rowChange > 0) {
+            text += (curCol + 1) + "+" + (newCol + 1); 
+        } else {
+            text += (curCol + 1) + "-" + (newCol + 1); 
+        }
+    }
+    console.log(blackMoveContainer); 
+    blackMoveContainer[0].innerHTML = text; 
+}
+
+function genRedRecord(newRow, newCol, redMoveContainer) {
+    var curRow = chessboard.curPiece.row; 
+    var curCol = chessboard.curPiece.col; 
+    var curType = chessboard.curPiece.type; 
+    var rowChange = curRow - newRow;  
+    var text = ""; 
+
+    if (curType === "pawn" || curType === "chariot" || curType === "cannon" || curType === "general") {
+        if (curType === "pawn") text += "P";
+        if (curType === "chariot") text += "R"; 
+        if (curType === "cannon") text += "C"; 
+        if (curType === "general") text += "K"; 
+        
+        if (rowChange > 0) {
+            text += curRow + "+" + rowChange; 
+        } else if (rowChange < 0) {
+            text += curRow + "" + rowChange;
+        } else {
+            text += (curCol + 1) + "=" + (newCol + 1); 
+        }
+    } else if (curType === "horse" || curType === "advisor" || curType === "elephant") {
+        if (curType === "horse") text += "N"; 
+        if (curType === "advisor") text += "A"; 
+        if (curType === "elephant") text += "B"; 
+
+        if (rowChange > 0) {
+            text += (curCol + 1) + "+" + (newCol + 1); 
+        } else {
+            text += (curCol + 1) + "-" + (newCol + 1); 
+        }
+    }
+    console.log(redMoveContainer);  
+    redMoveContainer.innerHTML = text; // test red move
 }
 
 // switch side
@@ -267,13 +340,14 @@ function cancelPiece(event) {
     }
 
     if (chessboard.status) {
-        if (chessboard.curPiece.id == selectedPiece.id) {
+        if (chessboard.curPiece != null && chessboard.curPiece.id == selectedPiece.id) {
             clickedPiece.style.backgroundColor = "#FAF0E6";
             chessboard.curPiece = null;
         }
     }
 
     console.log("cancel piece");
+    console.log(chessboard.curPiece); 
     initListeners();
 }
 
