@@ -34,8 +34,8 @@ console.log(chessboard.board);
         window.row = tBody.insertRow(i);
         for(var j=0;j<9;j++){
             var cell = row.insertCell(j);
-            cell.setAttribute("data-x",j);
-            cell.setAttribute("data-y",i);
+            cell.setAttribute("data-x",i);
+            cell.setAttribute("data-y",j);
             cell.addEventListener("click", clickBoard, false);
         }
     }
@@ -81,7 +81,7 @@ function clickBoard(event) {
         if(chessboard.curPiece) {
             var x = parseInt(this.getAttribute("data-x"));
             var y = parseInt(this.getAttribute("data-y"));
-            console.log("now at " + chessboard.curPiece.col + ", " + chessboard.curPiece.row); 
+            console.log("now at " + chessboard.curPiece.row + ", " + chessboard.curPiece.col); 
             console.log("attempting to " + x + ", " + y); 
             // attempt to move the piece
             var res = chessboard.movePiece(chessboard.curPiece, x, y);
@@ -154,12 +154,29 @@ function initListeners() {
             divs[i].addEventListener("click", cancelPiece, false);
         }
 
-        console.log("Current Piece: " + chessboard.curPiece); 
+        console.log(chessboard.curPiece); 
     }
 }
 
 function executeMove(newRow, newCol) {
     // execute move
+    var curRow = chessboard.curPiece.row; 
+    var curCol = chessboard.curPiece.col; 
+    chessboard.board[curRow][curCol] = null; 
+    chessboard.board[newRow][newCol] = chessboard.curPiece; 
+
+    var clickedPiece = document.getElementById(chessboard.curPiece.id);
+    var source = document.querySelector(`[data-x="${curRow}"][data-y="${curCol}"]`); 
+    var tgt = document.querySelector(`[data-x="${newRow}"][data-y="${newCol}"]`); 
+
+    source.removeChild(clickedPiece);
+    tgt.appendChild(clickedPiece); 
+    clickedPiece.style.backgroundColor = "#FAF0E6"; 
+    
+    chessboard.curPiece.row = newRow; 
+    chessboard.curPiece.col = newCol; 
+    chessboard.curPiece = null; 
+    initListeners(); 
 }
 
 // create pieces
@@ -170,13 +187,13 @@ function createPieces(x, y, icon, color, id) {
     div.classList.add("pieces");
     div.classList.add(color === "red" ? "red" : "black");
     div.appendChild(document.createTextNode(icon));
-    tBody.rows[y].cells[x].appendChild(div);
+    tBody.rows[x].cells[y].appendChild(div);
     return div;
 }
 
 function renderBoard() {
-    for (let i=0; i<=8; i++) {
-        for (let j=0; j<=9; j++) {
+    for (let i=0; i<=9; i++) {
+        for (let j=0; j<=8; j++) {
             var piece = chessboard.board[i][j]; 
             if (piece != null) {
                 createPieces(i, j, piece.icon, piece.color, piece.id); 
