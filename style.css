@@ -3,10 +3,6 @@ table {
     border-collapse: collapse;
 }
 
-table.board {
-    background-color: white;
-}
-
 table,td.board {
     border: 1px solid black;
 }
@@ -19,6 +15,7 @@ td {
 body {
     padding: 0px; 
     margin: 0px;
+    background-color: blanchedalmond;
 }
 
 nav {
@@ -30,7 +27,6 @@ nav {
 #navleft {
     float: left;
     padding-left: 30px;
-    /* Add the styles here */
     font-size: 30px; 
     color: white; 
 }
@@ -45,6 +41,30 @@ nav {
     align-items: center;
     justify-content: center;
     height: 100%;
+}
+
+.content {
+    padding: 40px; 
+}
+
+.topdiv {
+    float: right;
+    padding-right: 1cm;
+    padding-top: 35px; 
+}
+
+.topmenu {
+    color: lightgray;
+    margin: 10px;
+    padding: 20px;
+    font-size: 20px;
+    text-decoration:none;
+}
+  
+.topmenu:hover {
+    color: white;
+    font-weight: bolder; 
+    text-decoration: underline;
 }
 
 #resetBtn {
