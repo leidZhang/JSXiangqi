@@ -53,39 +53,39 @@ export class Board {
         }
 
         // fill the board red side
-        this.board[4][9] = redGeneral; 
-        this.board[3][9] = redAdvisor1; 
-        this.board[5][9] = redAdvisor2; 
-        this.board[2][9] = redElephant1; 
-        this.board[6][9] = redElephant2; 
-        this.board[1][9] = redHorse1; 
-        this.board[7][9] = redHorse2; 
-        this.board[0][9] = redChariot1; 
-        this.board[8][9] = redChariot2; 
-        this.board[1][7] = redCannon1; 
+        this.board[9][4] = redGeneral; 
+        this.board[9][3] = redAdvisor1; 
+        this.board[9][5] = redAdvisor2; 
+        this.board[9][2] = redElephant1; 
+        this.board[9][6] = redElephant2; 
+        this.board[9][1] = redHorse1; 
+        this.board[9][7] = redHorse2; 
+        this.board[9][0] = redChariot1; 
+        this.board[9][8] = redChariot2; 
+        this.board[7][1] = redCannon1; 
         this.board[7][7] = redCannon2;
-        this.board[0][6] = redPawn1; 
-        this.board[2][6] = redPawn2; 
-        this.board[4][6] = redPawn3; 
+        this.board[6][0] = redPawn1; 
+        this.board[6][2] = redPawn2; 
+        this.board[6][4] = redPawn3; 
         this.board[6][6] = redPawn4; 
-        this.board[8][6] = redPawn5;
+        this.board[6][8] = redPawn5;
         // fill the board black side 
-        this.board[4][0] = blackGeneral; 
-        this.board[3][0] = blackAdvisor1; 
-        this.board[5][0] = blackAdvisor2; 
-        this.board[2][0] = blackElephant1; 
-        this.board[6][0] = blackElephant2; 
-        this.board[1][0] = blackHorse1; 
-        this.board[7][0] = blackHorse2; 
+        this.board[0][4] = blackGeneral; 
+        this.board[0][3] = blackAdvisor1; 
+        this.board[0][5] = blackAdvisor2; 
+        this.board[0][2] = blackElephant1; 
+        this.board[0][6] = blackElephant2; 
+        this.board[0][1] = blackHorse1; 
+        this.board[0][7] = blackHorse2; 
         this.board[0][0] = blackChariot1; 
-        this.board[8][0] = blackChariot2; 
-        this.board[1][2] = blackCannon1; 
-        this.board[7][2] = blackCannon2;
-        this.board[0][3] = blackPawn1; 
-        this.board[2][3] = blackPawn2; 
-        this.board[4][3] = blackPawn3; 
-        this.board[6][3] = blackPawn4; 
-        this.board[8][3] = blackPawn5;
+        this.board[0][8] = blackChariot2; 
+        this.board[2][1] = blackCannon1; 
+        this.board[2][7] = blackCannon2;
+        this.board[3][0] = blackPawn1; 
+        this.board[3][2] = blackPawn2; 
+        this.board[3][4] = blackPawn3; 
+        this.board[3][6] = blackPawn4; 
+        this.board[3][8] = blackPawn5;
     } 
 
     recordMove(newCol, newRow) {
@@ -102,22 +102,12 @@ export class Board {
         if (newRow < 0 || newRow > 9 || newCol < 0 || newCol > 8) { 
             return false; 
         }
-        
+
         // check if the piece can move to the new position 
         console.log("move result: " + piece.validateMove(newRow, newCol, this.board)); 
         if (!piece.validateMove(newRow, newCol, this.board)) { 
             return false; 
         }
-        
-        // update the board 
-        var curRow = piece.row; 
-        var curCol = piece.col; 
-        this.board[curRow][curCol] = null; 
-        // remove the piece from the old position 
-        this.board[newRow][newCol] = piece; 
-        // place the piece on the new position 
-        piece.row = newRow; // update the piece’s row 
-        piece.col = newCol; // update the piece’s col
         
         return true; 
     }
