@@ -176,6 +176,7 @@ function executeMove(newRow, newCol) {
         } else {
             turnText.innerHTML = "Red Win";
         }
+        moveRecord(newRow, newCol); 
     } else {
         moveRecord(newRow, newCol); 
         switchSide(); 
@@ -231,9 +232,9 @@ function genBlackRecord(newRow, newCol, blackMoveContainer) {
         if (curType === "general") text += "k"; 
         
         if (rowChange > 0) {
-            text += curRow + "+" + rowChange; 
+            text += (10 - curRow) + "+" + rowChange; 
         } else if (rowChange < 0) {
-            text += curRow + "" + rowChange;
+            text += (10 - curRow) + "" + rowChange;
         } else {
             text += (curCol + 1) + "=" + (newCol + 1); 
         }
@@ -266,9 +267,9 @@ function genRedRecord(newRow, newCol, redMoveContainer) {
         if (curType === "general") text += "K"; 
         
         if (rowChange > 0) {
-            text += curRow + "+" + rowChange; 
+            text += (10 - curRow) + "+" + rowChange; 
         } else if (rowChange < 0) {
-            text += curRow + "" + rowChange;
+            text += (10 - curRow) + "" + rowChange;
         } else {
             text += (curCol + 1) + "=" + (newCol + 1); 
         }
