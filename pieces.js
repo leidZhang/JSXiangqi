@@ -191,19 +191,19 @@ export class Cannon extends ChessPiece {
     validateMove(newRow, newCol, board) {
         let valid = []; 
         
-        const up = this.upperLimit(board) + 1; 
+        const up = (board[newRow][newCol] != null) ? this.upperLimit(board) + 1 : this.upperLimit(board); 
         for (let i=up; i<this.row; i++) {
             valid.push([i-this.row, 0]); 
         }
-        const down = this.downLimit(board) - 1; 
+        const down = (board[newRow][newCol] != null) ? this.downLimit(board) - 1 : this.downLimit(board); 
         for (let i=down; i>this.row; i--) {
             valid.push([i-this.row, 0]); 
         }
-        const left = this.leftLimit(board) + 1; 
+        const left = (board[newRow][newCol] != null) ? this.leftLimit(board) + 1 : this.leftLimit(board); 
         for (let i=left; i<this.col; i++) {
             valid.push([0, i-this.col]); 
         }
-        const right = this.rightLimit(board) - 1;
+        const right = (board[newRow][newCol] != null) ? this.rightLimit(board) - 1 : this.rightLimit(board);
         for (let i=right; i>this.col; i--) {
             valid.push([0, i-this.col]); 
         }

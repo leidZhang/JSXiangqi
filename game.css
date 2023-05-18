@@ -15,6 +15,51 @@ td {
     height: 65px;
     width: 65px;
 }
+
+body {
+    padding: 0px; 
+    margin: 0px;
+}
+
+nav {
+    background-color: darkred;
+    color: #FAF0E6;
+    height: 90px;
+}
+
+#navleft {
+    float: left;
+    padding-left: 30px;
+    /* Add the styles here */
+    font-size: 30px; 
+    color: white; 
+}
+
+.turnCnt {
+    padding-left: "15px";
+    padding-right: "115px";
+}
+
+.centered {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+#resetBtn {
+    height: 50px;
+    font-size: 20px;
+}
+
+#movesRecords {
+    border: none;
+}
+
+#movesRecords tbody {
+    font-size: medium;
+    text-align: center;
+}
  
 div.pieces {
     margin: 5px;

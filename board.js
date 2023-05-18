@@ -6,6 +6,7 @@ export class Board {
         this.turn = "red"; 
         this.status = true; // game start 
         this.curPiece = null; 
+        this.turnCnt = 0; 
     }
 
     initBoard() {
@@ -93,6 +94,11 @@ export class Board {
     } 
 
     movePiece(piece, newRow, newCol) { 
+        // check if attacking the friendly
+        if (this.board[newRow][newCol] != null && this.board[newRow][newCol].color == piece.color) {
+            return false; 
+        }
+
         // check if the piece belongs to the board 
         if (!this.board[piece.row][piece.col] === piece) { 
             return false; 
@@ -104,7 +110,6 @@ export class Board {
         }
 
         // check if the piece can move to the new position 
-        console.log("move result: " + piece.validateMove(newRow, newCol, this.board)); 
         if (!piece.validateMove(newRow, newCol, this.board)) { 
             return false; 
         }
