@@ -19,7 +19,7 @@ console.log(chessboard.board);
     }
 
     table.style.position="absolute";
-    table.style.top="80px";
+    table.style.top="200px";
     table.style.left="280px";
     table.appendChild(tBody);
     document.body.appendChild(table);
@@ -43,7 +43,7 @@ console.log(chessboard.board);
     table.setAttribute("id", "chessboardContainer"); 
     table.appendChild(tBody);
     table.style.position="absolute";
-    table.style.top="50px";
+    table.style.top="170px";
     table.style.left="250px";
     document.body.appendChild(table);
 })(); 
@@ -59,21 +59,70 @@ console.log(chessboard.board);
              
         }
     },false);
-    beginText.style.position="absolute";
-    beginText.style.top="200px";
-    beginText.style.left="1000px";
+    beginText.style.position = "absolute";
+    beginText.style.top = "200px";
+    beginText.style.left ="1000px";
     document.body.appendChild(beginText);
 })(); 
 
-// red turn?
+// initial status
 (function() {
     window.turnText = document.createElement("h1");
-    turnText.innerHTML="Red";
-    turnText.style.position="absolute";
-    turnText.style.top="250px";
-    turnText.style.left="1000px";
+    turnText.innerHTML = "Red Turn";
+    turnText.style.position = "absolute";
+    turnText.style.top = "250px";
+    turnText.style.left = "1000px";
     document.body.appendChild(turnText);
+
+    var button = document.createElement("button");
+    button.innerHTML = "Reset Game";
+    button.setAttribute("id", "resetBtn");
+    button.style.position = "absolute";
+    button.style.top = "330px";
+    button.style.left = "1000px";
+    button.addEventListener("click", handleClick);
+    document.body.appendChild(button);
+
+    var movesContainer = document.createElement("div");
+    movesContainer.setAttribute("id", "movesContainer");
+    movesContainer.style.position = "absolute";
+    movesContainer.style.top = "410px";
+    movesContainer.style.left = "1000px";
+    movesContainer.style.width = "700px";
+    movesContainer.style.height = "430px";
+    movesContainer.style.backgroundColor = "lightgray";
+    movesContainer.style.overflow = "auto";
+    document.body.appendChild(movesContainer);
+
+    // Create the table element
+    var moveTable = document.createElement("table");
+    moveTable.setAttribute("id", "movesRecords"); 
+    movesContainer.appendChild(moveTable);
+
+    // Create the table header row
+    var headerRow = moveTable.insertRow();
+    var turnHeader = document.createElement("th");
+    turnHeader.innerHTML = "Turn";
+    headerRow.appendChild(turnHeader);
+    var redActionHeader = document.createElement("th");
+    redActionHeader.innerHTML = "Red Action";
+    headerRow.appendChild(redActionHeader);
+    var blackActionHeader = document.createElement("th");
+    blackActionHeader.innerHTML = "Black Action";
+    headerRow.appendChild(blackActionHeader);
+
+    // Apply spacing between the header cells
+    turnHeader.style.paddingLeft = "75px"; 
+    turnHeader.style.paddingRight = "75px";
+    redActionHeader.style.padding = "0 115px";
+    blackActionHeader.style.paddingLeft = "75px";
+    blackActionHeader.style.paddingRight = "75px"; 
 })();
+
+function handleClick() {
+    console.log("Button clicked!");
+    location.reload(); // Refresh the page
+}
 
 // click board
 function clickBoard(event) {
@@ -86,7 +135,9 @@ function clickBoard(event) {
             // attempt to move the piece
             var res = chessboard.movePiece(chessboard.curPiece, x, y);
             console.log(chessboard.board); 
-            if (res) executeMove(x, y);
+            if (res) {
+                executeMove(x, y);
+            } 
         }
         event.stopPropagation();
     } else {
@@ -94,11 +145,94 @@ function clickBoard(event) {
     }     
 }
 
+// execute move
+function executeMove(newRow, newCol) {
+    var curRow = chessboard.curPiece.row; 
+    var curCol = chessboard.curPiece.col; 
+    chessboard.board[curRow][curCol] = null; 
+    chessboard.board[newRow][newCol] = chessboard.curPiece; 
+
+    var source = document.querySelector(`[data-x="${curRow}"][data-y="${curCol}"]`); 
+    var tgt = document.querySelector(`[data-x="${newRow}"][data-y="${newCol}"]`); 
+    var clickedPiece = document.getElementById(chessboard.curPiece.id);
+    var tgtPiece = tgt.children[0]; 
+    console.log(tgtPiece); 
+
+    source.removeChild(clickedPiece);
+    if (tgtPiece != null) {
+        tgt.removeChild(tgtPiece); 
+    }
+    tgt.appendChild(clickedPiece); 
+    clickedPiece.style.backgroundColor = "#FAF0E6"; 
+    
+    chessboard.curPiece.row = newRow; 
+    chessboard.curPiece.col = newCol; 
+    chessboard.curPiece = null; 
+
+    // switch side
+    var res = chessboard.isGameOver(); 
+    if (res) {
+        chessboard.status = false; 
+        beginText.innerHTML="Game Over";
+         
+        if (tgtPiece.getAttribute("data-color") === "red") {
+            turnText.innerHTML = "Black Win";
+        } else {
+            turnText.innerHTML = "Red Win";
+        }
+    } else {
+        moveRecord(); 
+        switchSide(); 
+        initListeners(); 
+    }
+}
+
+function moveRecord() {
+    var moveTable = document.getElementById("movesRecords"); 
+    if (chessboard.turn === "red") {
+        chessboard.turnCnt++; 
+        console.log("current turn cnt: " + chessboard.turnCnt); 
+        var moveRow = moveTable.insertRow(); 
+        moveRow.setAttribute("class", "moveRow"); 
+        moveRow.setAttribute("data-turn", chessboard.turnCnt); 
+        var turnContainer = document.createElement("td"); 
+        turnContainer.setAttribute("class", "turnCnt"); 
+        var redMoveContainer = document.createElement("td");
+        redMoveContainer.setAttribute("class", "redMove"); 
+        var blackMoveContainer = document.createElement("td");   
+        blackMoveContainer.setAttribute("class", "blackMove"); 
+
+        moveRow.appendChild(turnContainer); 
+        turnContainer.innerHTML += chessboard.turnCnt; 
+        moveRow.appendChild(redMoveContainer); 
+        redMoveContainer.innerHTML += "TEMP"; // test red move
+        moveRow.appendChild(blackMoveContainer); 
+    } else {
+        var moveRow = document.querySelector(`[data-turn="${chessboard.turnCnt}"]`); 
+        var blackMoveContainer = moveRow.getElementsByClassName("blackMove"); 
+        blackMoveContainer[0].innerHTML = "temp"; // test black move
+    }
+}
+
+// switch side
+function switchSide() {
+    if (chessboard.turn == "red") {
+        chessboard.turn = "black"; 
+        turnText.innerHTML = "Black Turn"; 
+    } else {
+        chessboard.turn = "red"; 
+        turnText.innerHTML = "Red Turn"; 
+    }
+}
+
 // choose piece
 function choosePiece(event) {
+    console.log(chessboard.turn); 
     if (chessboard.status) {
         // select piece
         var clickedPiece = event.target;
+        if (chessboard.turn != clickedPiece.getAttribute("data-color")) return; // avoid control opponent's pieces
+
         console.log(clickedPiece);
         if (clickedPiece.classList.contains("pieces")) {
             var x = parseInt(clickedPiece.parentNode.getAttribute("data-x"));
@@ -107,6 +241,7 @@ function choosePiece(event) {
             chessboard.curPiece = chessboard.board[x][y];
         }
 
+        
         if (chessboard.turn == clickedPiece.getAttribute("data-color") && chessboard.curPiece) {
             clickedPiece.style.backgroundColor = "#B0E0E6";
             event.stopPropagation();
@@ -156,27 +291,6 @@ function initListeners() {
 
         console.log(chessboard.curPiece); 
     }
-}
-
-function executeMove(newRow, newCol) {
-    // execute move
-    var curRow = chessboard.curPiece.row; 
-    var curCol = chessboard.curPiece.col; 
-    chessboard.board[curRow][curCol] = null; 
-    chessboard.board[newRow][newCol] = chessboard.curPiece; 
-
-    var clickedPiece = document.getElementById(chessboard.curPiece.id);
-    var source = document.querySelector(`[data-x="${curRow}"][data-y="${curCol}"]`); 
-    var tgt = document.querySelector(`[data-x="${newRow}"][data-y="${newCol}"]`); 
-
-    source.removeChild(clickedPiece);
-    tgt.appendChild(clickedPiece); 
-    clickedPiece.style.backgroundColor = "#FAF0E6"; 
-    
-    chessboard.curPiece.row = newRow; 
-    chessboard.curPiece.col = newCol; 
-    chessboard.curPiece = null; 
-    initListeners(); 
 }
 
 // create pieces
