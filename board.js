@@ -89,10 +89,6 @@ export class Board {
         this.board[3][8] = blackPawn5;
     } 
 
-    recordMove(newCol, newRow) {
-        return "[" + this.curPiece.row + "," + this.curPiece.col + "] -> [" + newRow + "," + newCol + "]"; 
-    } 
-
     movePiece(piece, newRow, newCol) { 
         // check if attacking the friendly
         if (this.board[newRow][newCol] != null && this.board[newRow][newCol].color == piece.color) {
@@ -113,8 +109,89 @@ export class Board {
         if (!piece.validateMove(newRow, newCol, this.board)) { 
             return false; 
         }
+
+        // check if suiside
+        if (this.isSuisideMove(piece, newRow, newCol, this.board)) {
+            console.log("suiside!")
+            return false; 
+        }
         
         return true; 
+    }
+
+    isCheckMate(color, board) {
+        var general = this.findGeneral(color, this.board); 
+        var enemies = this.findEnemies(color, this.board); 
+
+        for (var i = 0; i < enemies.length; i++) { 
+            var enemy = enemies[i]; 
+            if (enemy.validateMove(general.row, general.col, board)) { 
+                return true; 
+            } 
+        }
+
+        return false; // default result
+    }
+
+    findEnemies(color, board) {
+        var enemies = []; 
+
+        for (let i=0; i<=9; i++) {
+            for (let j=0; j<=8; j++) {
+                var piece = board[i][j]; 
+                if (piece == null) continue; 
+                if (piece.color == color) {
+                    enemies.push(board[i][j]); 
+                }
+            }
+        }
+
+        return enemies; 
+    }
+
+    findGeneral(color, board) {
+        for (let i=0; i<=9; i++) {
+            for (let j=0; j<=8; j++) {
+                var piece = board[i][j]; 
+                if (piece == null) continue; 
+                if (piece.type == "general" && piece.color != color) {
+                    return piece; 
+                }
+            }
+        }
+
+        return null; 
+    }
+
+    isSuisideMove(piece, newRow, newCol, board) {
+        var copy = this.copyBoard(board); 
+        var col = piece.col; 
+        var row = piece.row; 
+        var color = (piece.color == "red") ? "black" : "red"; 
+
+        copy[row][col] = null; 
+        copy[newRow][newCol] = piece; 
+
+        return this.isCheckMate(color, copy); 
+    }
+
+    copyBoard(board) {
+        var copy = []; 
+
+        for (let i=0; i<=9; i++) {
+            copy[i] = []; 
+            for (let j=0; j<=8; j++) {
+                copy[i][j] = null; 
+            }
+        }
+        
+        for (let i=0; i<=9; i++) {
+            for (let j=0; j<=8; j++) {
+                copy[i][j] = board[i][j]; 
+            }
+        }
+
+        return copy; 
     }
 
     isGameOver() { 

@@ -50,15 +50,20 @@ console.log(chessboard.board);
 
 // game start
 (function() {
+    window.checkText = document.createElement("h1");
+    window.checkText = document.createElement("h1");
+    checkText.style.display="inline";
+    checkText.innerHTML="";
+    
+    checkText.style.position = "absolute";
+    checkText.style.top = "150px";
+    checkText.style.left ="1000px";
+    document.body.appendChild(checkText);
+    
     window.beginText = document.createElement("h1");
     beginText.style.display="inline";
     beginText.innerHTML="Game Start";
-    beginText.addEventListener("click", function(event){
-        chessboard.initBoard();
-        if(!chessboard.status){
-             
-        }
-    },false);
+    
     beginText.style.position = "absolute";
     beginText.style.top = "200px";
     beginText.style.left ="1000px";
@@ -67,6 +72,7 @@ console.log(chessboard.board);
 
 // initial status
 (function() {
+    // turn info
     window.turnText = document.createElement("h1");
     turnText.innerHTML = "Red Turn";
     turnText.style.position = "absolute";
@@ -74,6 +80,7 @@ console.log(chessboard.board);
     turnText.style.left = "1000px";
     document.body.appendChild(turnText);
 
+    // reset button
     var restbtn = document.createElement("button");
     restbtn.innerHTML = "New Game";
     restbtn.setAttribute("id", "resetBtn");
@@ -83,6 +90,7 @@ console.log(chessboard.board);
     restbtn.addEventListener("click", handleClick);
     document.body.appendChild(restbtn); 
 
+    // record sheet
     var movesContainer = document.createElement("div");
     movesContainer.setAttribute("id", "movesContainer");
     movesContainer.style.position = "absolute";
@@ -130,8 +138,7 @@ function clickBoard(event) {
         if(chessboard.curPiece) {
             var x = parseInt(this.getAttribute("data-x"));
             var y = parseInt(this.getAttribute("data-y"));
-            console.log("now at " + chessboard.curPiece.row + ", " + chessboard.curPiece.col); 
-            console.log("attempting to " + x + ", " + y); 
+
             // attempt to move the piece
             var res = chessboard.movePiece(chessboard.curPiece, x, y);
             console.log(chessboard.board); 
@@ -165,9 +172,8 @@ function executeMove(newRow, newCol) {
     tgt.appendChild(clickedPiece); 
     clickedPiece.style.backgroundColor = "#FAF0E6"; 
     
-    // switch side
-    var res = chessboard.isGameOver(); 
-    if (res) {
+    
+    if (chessboard.isGameOver()) {
         chessboard.status = false; 
         beginText.innerHTML="Game Over";
          
@@ -179,13 +185,20 @@ function executeMove(newRow, newCol) {
         moveRecord(newRow, newCol); 
     } else {
         moveRecord(newRow, newCol); 
-        switchSide(); 
+        switchSide(); // switch side 
     }
 
     chessboard.curPiece.row = newRow; 
     chessboard.curPiece.col = newCol; 
     chessboard.curPiece = null; 
 
+    if (chessboard.isCheckMate("red", chessboard.board) || chessboard.isCheckMate("black", chessboard.board)) {
+        console.log("check!");  // check detection
+        checkText.innerHTML = "Check!"; 
+    } else {
+        checkText.innerHTML = ""; 
+    }
+    
     initListeners(); 
 }
 
@@ -213,7 +226,6 @@ function moveRecord(newRow, newCol) {
     } else {
         var moveRow = document.querySelector(`[data-turn="${chessboard.turnCnt}"]`); 
         var blackMoveContainer = moveRow.getElementsByClassName("blackMove"); 
-        // blackMoveContainer.innerHTML += "temp"; 
         genBlackRecord(newRow, newCol, blackMoveContainer); 
     }
 }
@@ -249,7 +261,7 @@ function genBlackRecord(newRow, newCol, blackMoveContainer) {
             text += (curCol + 1) + "-" + (newCol + 1); 
         }
     }
-    console.log(blackMoveContainer); 
+
     blackMoveContainer[0].innerHTML = text; 
 }
 
@@ -284,7 +296,7 @@ function genRedRecord(newRow, newCol, redMoveContainer) {
             text += (curCol + 1) + "-" + (newCol + 1); 
         }
     }
-    console.log(redMoveContainer);  
+
     redMoveContainer.innerHTML = text; // test red move
 }
 
@@ -314,7 +326,6 @@ function choosePiece(event) {
             console.log("Current position: " + x + ", " + y); 
             chessboard.curPiece = chessboard.board[x][y];
         }
-
         
         if (chessboard.turn == clickedPiece.getAttribute("data-color") && chessboard.curPiece) {
             clickedPiece.style.backgroundColor = "#B0E0E6";
@@ -341,7 +352,7 @@ function cancelPiece(event) {
     }
 
     if (chessboard.status) {
-        if (chessboard.curPiece != null && chessboard.curPiece.id == selectedPiece.id) {
+        if (chessboard.curPiece != null && chessboard.curPiece == selectedPiece) {
             clickedPiece.style.backgroundColor = "#FAF0E6";
             chessboard.curPiece = null;
         }
@@ -363,8 +374,6 @@ function initListeners() {
         } else {
             divs[i].addEventListener("click", cancelPiece, false);
         }
-
-        console.log(chessboard.curPiece); 
     }
 }
 
