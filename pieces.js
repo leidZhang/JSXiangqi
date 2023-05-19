@@ -11,9 +11,6 @@ class ChessPiece {
     checkMove(newRow, newCol, valid, board) {
         const rowChange = newRow - this.row; 
         const colChange = newCol - this.col; // check position 
-        console.log(valid); 
-        
-        console.log(board[newRow][newCol]); 
 
         return valid.some(([validRowChange, validColChange]) => { 
             return rowChange === validRowChange && colChange === validColChange; 
@@ -63,25 +60,23 @@ export class General extends ChessPiece {
             }
         }
 
-        console.log("attacking general"); 
-        console.log(board[attackPos[0][0]][attackPos[0][1]]);  
-        console.log(newRow); 
-        console.log(newCol); 
-
         return (newRow == attackPos[0][0] && newCol == attackPos[0][1]); 
     }
 
     validateMove(newRow, newCol, board) {
-        if (this.validAttack(newRow, newCol, board)) return true; 
+        var valid = []; 
 
-        var valid = [[0,1],[1,0],[-1,0],[0,-1]]; 
-
-        if (newCol < 3) return false; // left limit
-        if (newCol > 5) return false; // right limit
-        if (this.color == "red" && newRow < 7) return false; // down limit
-        if (this.color == "black" && newRow > 2) return false; // up limit
-
-        return this.checkMove(newRow, newCol, valid, board); 
+        if (this.col != 3) valid.push([0,-1]); 
+        if (this.col != 5) valid.push([0,1]); 
+        if (this.color == "black") {
+            if (this.row != 0) valid.push([-1,0]); 
+            if (this.row != 2) valid.push([1,0]); 
+        } else {
+            if (this.row != 7) valid.push([-1,0]); 
+            if (this.row != 9) valid.push([1,0]); 
+        }
+        
+        return this.checkMove(newRow, newCol, valid, board) || this.validAttack(newRow, newCol, board); 
     }
 }
 
@@ -173,19 +168,12 @@ export class Cannon extends ChessPiece {
                 break; 
             }
         }
-        console.log("carriage"); 
-        console.log(board[this.row][left]); 
-        console.log(board[this.row][right]); 
-        console.log(board[up][this.col]);
-        console.log(board[down][this.col]);  
-        console.log("targets"); 
+
         for (let i=0; i<attackPos.length; i++) {
             console.log(board[attackPos[i][0]][attackPos[i][1]]); 
         }
         // check position 
         return attackPos.some(([row, col]) => { 
-            console.log(newRow === row); 
-            console.log(newCol === col); 
             return newRow === row && newCol === col; 
         });
     }
@@ -220,12 +208,21 @@ export class Advisor extends ChessPiece {
     }
 
     validateMove(newRow, newCol, board) {
-        let valid = [[1,1],[1,-1],[-1,1],[-1,-1]]; 
-        
-        if (newCol < 3) return false; // left limit
-        if (newCol > 5) return false; // right limit
-        if (this.color == "red" && newRow < 7) return false; // down limit
-        if (this.color == "black" && newRow > 2) return false; // up limit
+        let valid = []; 
+
+        if (this.color == "black") {
+            if (this.row == 0 && this.col == 3) valid.push([1,1]); // down right
+            else if (this.row == 0 && this.col == 5) valid.push([1,-1]); // down left
+            else if (this.row == 2 && this.col == 3) valid.push([-1,1]); // up right 
+            else if (this.row == 2 && this.col == 5) valid.push([-1,-1]); // up left
+            else valid.push([1,1], [1,-1], [-1,1], [-1,-1]); 
+        } else {
+            if (this.row == 7 && this.col == 3) valid.push([1,1]); // down right
+            else if (this.row == 7 && this.col == 5) valid.push([1,-1]); // down left
+            else if (this.row == 9 && this.col == 3) valid.push([-1,1]); // up right 
+            else if (this.row == 9 && this.col == 5) valid.push([-1,-1]); // up left
+            else valid.push([1,1], [1,-1], [-1,1], [-1,-1]); 
+        }
 
         return this.checkMove(newRow, newCol, valid, board); 
     }
