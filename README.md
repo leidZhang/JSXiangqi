@@ -4,13 +4,13 @@ This is a simple web-based xiangqi game that I created with JavaScript, HTML and
 ## Features
 - A 9x10 board with 32 pieces representing two armies: red and black.
 - Click interface for moving the pieces.
-- Basic rules enforcement.
+- Basic rules enforcement and checkmate detection.
 - A reset button to start a new game.
 - If one of the general is killed, the game will stop
 ## How to Play
 To start the game, open the index.html file in your browser.
 To move a piece, click it and then click an empty or occupied intersection on the board. If the move is valid, the piece will be placed there. If not, the piece will stay at its original position.
-The goal of the game is to checkmate (checkmate detection is still under development) the opponent’s general, who resides in a 3x3 palace at the center of the back rank.
+The goal of the game is to checkmate the opponent’s general, who resides in a 3x3 palace at the center of the back rank.
 To start a new game, click on the "New Game" button at the bottom of the page.
 ## License
 This project is licensed under the Apache-2.0 license - see the LICENSE file for details.
