@@ -4,7 +4,7 @@ This is a simple web-based xiangqi game that I created with JavaScript, HTML and
 ## Features
 - A 9x10 board with 32 pieces representing two armies: red and black.
 - Click interface for moving the pieces.
-- Basic rules enforcement and checkmate detection.
+- Basic rules enforcement and check detection.
 - A reset button to start a new game.
 - If one of the general is killed, the game will stop
 ## How to Play

@@ -29,6 +29,7 @@ class ChessPiece {
 export class General extends ChessPiece { 
     constructor(id, color, icon, col, row) {
         super(id, color, "general", icon, col, row); 
+        this.movable = []; 
     }
 
     validAttack(newRow, newCol, board) {
@@ -60,7 +61,7 @@ export class General extends ChessPiece {
             }
         }
 
-        return (newRow == attackPos[0][0] && newCol == attackPos[0][1]); 
+        return (attackPos != null && newRow == attackPos[0][0] && newCol == attackPos[0][1]); 
     }
 
     validateMove(newRow, newCol, board) {
@@ -74,6 +75,10 @@ export class General extends ChessPiece {
         } else {
             if (this.row != 7) valid.push([-1,0]); 
             if (this.row != 9) valid.push([1,0]); 
+        }
+
+        for (let i=0; i<valid.length; i++) {
+            this.movable.push([this.row+valid[i][0]][this.col+valid[i][1]]); 
         }
         
         return this.checkMove(newRow, newCol, valid, board) || this.validAttack(newRow, newCol, board); 
@@ -169,9 +174,6 @@ export class Cannon extends ChessPiece {
             }
         }
 
-        for (let i=0; i<attackPos.length; i++) {
-            console.log(board[attackPos[i][0]][attackPos[i][1]]); 
-        }
         // check position 
         return attackPos.some(([row, col]) => { 
             return newRow === row && newCol === col; 
@@ -259,8 +261,6 @@ export class Elephant extends ChessPiece {
         if (this.color == "black" && newRow > 5) {
              return false; 
         }
-        console.log("valid"); 
-        console.log(valid); 
 
         return this.checkMove(newRow, newCol, valid, board); 
     } 
@@ -339,11 +339,6 @@ export class Chariot extends ChessPiece {
             valid.push([0, i-this.col]); 
         }
 
-        console.log("up: " + up);
-        console.log("down: " + down);
-        console.log("left: " + left);
-        console.log("right: " + right);    
-
         return this.checkMove(newRow, newCol, valid, board); 
     }
 }
@@ -357,7 +352,6 @@ export class Horse extends ChessPiece {
         let valid = []; 
         var curRow = this.row; 
         var curCol = this.col; 
-        console.log("surrounding"); 
         
         if (curRow+1<=9 && board[curRow+1][curCol] == null) { // check down
             valid.push([2,1], [2,-1]); 
@@ -372,7 +366,6 @@ export class Horse extends ChessPiece {
             valid.push([1,-2],[-1,-2]); 
         }
 
-        console.log(valid); 
         return this.checkMove(newRow, newCol, valid, board); 
     }
 }

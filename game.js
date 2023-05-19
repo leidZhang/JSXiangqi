@@ -2,7 +2,7 @@ import { Board } from './board.js';
 
 const chessboard = new Board(); 
 chessboard.initBoard(); 
-console.log(chessboard.board); 
+// console.log(chessboard.board); 
 
 // set board shape
 (function() {
@@ -141,7 +141,6 @@ function clickBoard(event) {
 
             // attempt to move the piece
             var res = chessboard.movePiece(chessboard.curPiece, x, y);
-            console.log(chessboard.board); 
             if (res) {
                 executeMove(x, y);
             } 
@@ -163,7 +162,6 @@ function executeMove(newRow, newCol) {
     var tgt = document.querySelector(`[data-x="${newRow}"][data-y="${newCol}"]`); 
     var clickedPiece = document.getElementById(chessboard.curPiece.id);
     var tgtPiece = tgt.children[0]; 
-    console.log(tgtPiece); 
 
     source.removeChild(clickedPiece);
     if (tgtPiece != null) {
@@ -172,12 +170,11 @@ function executeMove(newRow, newCol) {
     tgt.appendChild(clickedPiece); 
     clickedPiece.style.backgroundColor = "#FAF0E6"; 
     
-    
     if (chessboard.isGameOver()) {
         chessboard.status = false; 
         beginText.innerHTML="Game Over";
          
-        if (tgtPiece.getAttribute("data-color") === "red") {
+        if (clickedPiece.getAttribute("data-color") === "black") {
             turnText.innerHTML = "Black Win";
         } else {
             turnText.innerHTML = "Red Win";
@@ -192,8 +189,7 @@ function executeMove(newRow, newCol) {
     chessboard.curPiece.col = newCol; 
     chessboard.curPiece = null; 
 
-    if (chessboard.isCheckMate("red", chessboard.board) || chessboard.isCheckMate("black", chessboard.board)) {
-        console.log("check!");  // check detection
+    if (chessboard.isCheck("red", chessboard.board) || chessboard.isCheck("black", chessboard.board)) {
         checkText.innerHTML = "Check!"; 
     } else {
         checkText.innerHTML = ""; 
@@ -206,7 +202,6 @@ function moveRecord(newRow, newCol) {
     var moveTable = document.getElementById("movesRecords"); 
     if (chessboard.turn === "red") {
         chessboard.turnCnt++; 
-        console.log("current turn cnt: " + chessboard.turnCnt); 
         var moveRow = moveTable.insertRow(); 
         moveRow.setAttribute("class", "moveRow"); 
         moveRow.setAttribute("data-turn", chessboard.turnCnt); 
@@ -313,17 +308,14 @@ function switchSide() {
 
 // choose piece
 function choosePiece(event) {
-    console.log(chessboard.turn); 
     if (chessboard.status) {
         // select piece
         var clickedPiece = event.target;
         if (chessboard.turn != clickedPiece.getAttribute("data-color")) return; // avoid control opponent's pieces
 
-        console.log(clickedPiece);
         if (clickedPiece.classList.contains("pieces")) {
             var x = parseInt(clickedPiece.parentNode.getAttribute("data-x"));
             var y = parseInt(clickedPiece.parentNode.getAttribute("data-y"));
-            console.log("Current position: " + x + ", " + y); 
             chessboard.curPiece = chessboard.board[x][y];
         }
         
@@ -335,7 +327,6 @@ function choosePiece(event) {
         event.stopPropagation(); // stop popup
     }
 
-    console.log("select a piece"); 
     initListeners();
 }
 
@@ -343,7 +334,6 @@ function choosePiece(event) {
 function cancelPiece(event) {
     var clickedPiece = event.target;
     var selectedPiece = null; 
-    console.log("cancel: " + clickedPiece);
 
     if (clickedPiece) {
         var x = parseInt(clickedPiece.parentNode.getAttribute("data-x"));
@@ -358,8 +348,6 @@ function cancelPiece(event) {
         }
     }
 
-    console.log("cancel piece");
-    console.log(chessboard.curPiece); 
     initListeners();
 }
 
@@ -401,5 +389,4 @@ function renderBoard() {
 }
 
 renderBoard(); 
-console.log(chessboard.board); 
 window.addEventListener("load", initListeners);

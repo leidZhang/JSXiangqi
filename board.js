@@ -90,11 +90,17 @@ export class Board {
     } 
 
     movePiece(piece, newRow, newCol) { 
+        // check if suiside
+        if (this.isSuisideMove(piece, newRow, newCol, this.board)) {
+            console.log("suiside!")
+            return false; 
+        }
+
         // check if attacking the friendly
         if (this.board[newRow][newCol] != null && this.board[newRow][newCol].color == piece.color) {
             return false; 
         }
-
+        
         // check if the piece belongs to the board 
         if (!this.board[piece.row][piece.col] === piece) { 
             return false; 
@@ -110,24 +116,23 @@ export class Board {
             return false; 
         }
 
-        // check if suiside
-        if (this.isSuisideMove(piece, newRow, newCol, this.board)) {
-            console.log("suiside!")
-            return false; 
-        }
-        
         return true; 
     }
 
-    isCheckMate(color, board) {
-        var general = this.findGeneral(color, this.board); 
-        var enemies = this.findEnemies(color, this.board); 
+    isCheck(color, board) { // is our general being checked?
+        var general = this.findGeneral(color, board); 
+        var enemies = this.findEnemies(color, board);  
 
+        if (general == null) return; 
         for (var i = 0; i < enemies.length; i++) { 
             var enemy = enemies[i]; 
-            if (enemy.validateMove(general.row, general.col, board)) { 
+            if (enemy.type != "cannon" && enemy.validateMove(general.row, general.col, board)) { 
                 return true; 
             } 
+            // cannon cannot attack the target directly 
+            if (enemy.type == "cannon" && enemy.validAttack(general.row, general.col, board)) {
+                return true; 
+            }
         }
 
         return false; // default result
@@ -172,7 +177,10 @@ export class Board {
         copy[row][col] = null; 
         copy[newRow][newCol] = piece; 
 
-        return this.isCheckMate(color, copy); 
+        var flag = this.isCheck(color, copy); 
+        console.log(copy); 
+        
+        return flag; 
     }
 
     copyBoard(board) {
@@ -187,11 +195,27 @@ export class Board {
         
         for (let i=0; i<=9; i++) {
             for (let j=0; j<=8; j++) {
-                copy[i][j] = board[i][j]; 
+                copy[i][j] = board[i][j];
             }
         }
 
         return copy; 
+    }
+
+    isCheckMate() {
+        var enemies = this.findEnemies(color, board); 
+
+        for (var i = 0; i < enemies.length; i++) { 
+            var enemy = enemies[i]; 
+            var validPos = enemy.getValidPos(board); 
+            for (var j = 0; j < valid.length; j++) { 
+                if (!this.isSuisideMove(enemy, validPos[j][0], validPos[j][1], board)) { 
+                    return false; 
+                } 
+            } 
+        }
+
+        return true;
     }
 
     isGameOver() { 
@@ -217,8 +241,7 @@ export class Board {
         // check if both generals are still on the board 
         if (redGeneral != null && blackGeneral != null) {
              return false; // game is not over 
-        } else { 
-            return true; // game is over 
-        } 
+        }  
+        return true; // game is over 
     }
 }
