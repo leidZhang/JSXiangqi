@@ -67,9 +67,10 @@ nav {
     text-decoration: underline;
 }
 
-#resetBtn {
+.funcBtn {
     height: 50px;
     font-size: 20px;
+    float: left; 
 }
 
 #movesRecords {
