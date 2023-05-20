@@ -2,7 +2,6 @@ import { Board } from './board.js';
 
 const chessboard = new Board(); 
 chessboard.initBoard(); 
-// console.log(chessboard.board); 
 
 // set board shape
 (function() {
@@ -81,14 +80,30 @@ chessboard.initBoard();
     document.body.appendChild(turnText);
 
     // reset button
-    var restbtn = document.createElement("button");
-    restbtn.innerHTML = "New Game";
-    restbtn.setAttribute("id", "resetBtn");
-    restbtn.style.position = "absolute";
-    restbtn.style.top = "330px";
-    restbtn.style.left = "1000px";
-    restbtn.addEventListener("click", handleClick);
-    document.body.appendChild(restbtn); 
+    var btnContainer = document.createElement("div"); 
+    btnContainer.setAttribute("id", "btnContainer");
+    btnContainer.style.position = "absolute";
+    btnContainer.style.top = "330px";
+    btnContainer.style.left = "1000px";
+    document.body.appendChild(btnContainer); 
+
+    var restBtn = document.createElement("button");
+    restBtn.innerHTML = "New Game";
+    restBtn.setAttribute("class", "funcBtn");
+    restBtn.addEventListener("click", handleNewGame);
+    btnContainer.appendChild(restBtn);
+
+    var resignBtn = document.createElement("button"); 
+    resignBtn.innerHTML = "Resign"; 
+    resignBtn.setAttribute("class", "funcBtn"); 
+    resignBtn.addEventListener("click", handleResign); 
+    btnContainer.appendChild(resignBtn); 
+
+    var drawBtn = document.createElement("button"); 
+    drawBtn.innerHTML = "Request Draw"; 
+    drawBtn.setAttribute("class", "funcBtn"); 
+    drawBtn.addEventListener("click", handleDraw);
+    btnContainer.appendChild(drawBtn);  
 
     // record sheet
     var movesContainer = document.createElement("div");
@@ -127,9 +142,20 @@ chessboard.initBoard();
     blackActionHeader.style.paddingRight = "75px"; 
 })();
 
-function handleClick() {
+function handleDraw() {
+    alert("request draw"); 
+    // impl draw
+}
+
+function handleNewGame() {
     console.log("Button clicked!");
     location.reload(); // Refresh the page
+}
+
+function handleResign() {
+    var winner = (chessboard.turn === "red") ? "Black" : "Red";  
+    turnText.innerHTML = winner + " Win!";
+    chessboard.status = false; 
 }
 
 // click board
