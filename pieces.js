@@ -29,7 +29,6 @@ class ChessPiece {
 export class General extends ChessPiece { 
     constructor(id, color, icon, col, row) {
         super(id, color, "general", icon, col, row); 
-        this.movable = []; 
     }
 
     validAttack(newRow, newCol, board) {
@@ -63,7 +62,7 @@ export class General extends ChessPiece {
 
         return (attackPos != null && newRow == attackPos[0][0] && newCol == attackPos[0][1]); 
     }
-
+    
     validateMove(newRow, newCol, board) {
         var valid = []; 
 
@@ -75,10 +74,6 @@ export class General extends ChessPiece {
         } else {
             if (this.row != 7) valid.push([-1,0]); 
             if (this.row != 9) valid.push([1,0]); 
-        }
-
-        for (let i=0; i<valid.length; i++) {
-            this.movable.push([this.row+valid[i][0]][this.col+valid[i][1]]); 
         }
         
         return this.checkMove(newRow, newCol, valid, board) || this.validAttack(newRow, newCol, board); 
