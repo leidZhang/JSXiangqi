@@ -6,7 +6,7 @@ This is a simple web-based xiangqi game that I created with JavaScript, HTML and
 - Click interface for moving the pieces.
 - Basic rules enforcement and check detection.
 - A reset button to start a new game.
-- If one of the general is killed, the game will stop
+- If one of the general is killed, the game will be stopped
 ## How to Play
 To start the game, open the index.html file in your browser.
 To move a piece, click it and then click an empty or occupied intersection on the board. If the move is valid, the piece will be placed there. If not, the piece will stay at its original position.
