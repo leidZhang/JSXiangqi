@@ -120,17 +120,18 @@ export class Board {
     }
 
     isCheck(color, board) { // is our general being checked?
-        var general = this.findGeneral(color, board); 
+        var generalPos = this.findGeneral(color, board); 
         var enemies = this.findEnemies(color, board);  
 
-        if (general == null) return; 
+        if (generalPos.length == 0) return; 
         for (var i = 0; i < enemies.length; i++) { 
             var enemy = enemies[i]; 
-            if (enemy.type != "cannon" && enemy.validateMove(general.row, general.col, board)) { 
+             
+            if (enemy.type != "cannon" && enemy.validateMove(generalPos[0], generalPos[1], board)) { 
                 return true; 
             } 
             // cannon cannot attack the target directly 
-            if (enemy.type == "cannon" && enemy.validAttack(general.row, general.col, board)) {
+            if (enemy.type == "cannon" && enemy.validAttack(generalPos[0], generalPos[1], board)) {
                 return true; 
             }
         }
@@ -155,17 +156,19 @@ export class Board {
     }
 
     findGeneral(color, board) {
+        var pos = []; 
+
         for (let i=0; i<=9; i++) {
             for (let j=0; j<=8; j++) {
                 var piece = board[i][j]; 
                 if (piece == null) continue; 
                 if (piece.type == "general" && piece.color != color) {
-                    return piece; 
+                    pos[0] = i; pos[1] = j; break;  
                 }
             }
         }
 
-        return null; 
+        return pos; 
     }
 
     isSuisideMove(piece, newRow, newCol, board) {
@@ -176,9 +179,10 @@ export class Board {
 
         copy[row][col] = null; 
         copy[newRow][newCol] = piece; 
+        // piece.row = newRow; 
+        // piece.col = newCol; 
 
         var flag = this.isCheck(color, copy); 
-        console.log(copy); 
         
         return flag; 
     }
@@ -204,7 +208,7 @@ export class Board {
 
     isCheckMate() {
         var enemies = this.findEnemies(color, board); 
-
+        
         for (var i = 0; i < enemies.length; i++) { 
             var enemy = enemies[i]; 
             var validPos = enemy.getValidPos(board); 
