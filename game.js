@@ -164,7 +164,7 @@ function clickBoard(event) {
         if(chessboard.curPiece) {
             var x = parseInt(this.getAttribute("data-x"));
             var y = parseInt(this.getAttribute("data-y"));
-
+            
             // attempt to move the piece
             var res = chessboard.movePiece(chessboard.curPiece, x, y);
             if (res) {
@@ -342,6 +342,7 @@ function choosePiece(event) {
         if (clickedPiece.classList.contains("pieces")) {
             var x = parseInt(clickedPiece.parentNode.getAttribute("data-x"));
             var y = parseInt(clickedPiece.parentNode.getAttribute("data-y"));
+            
             chessboard.curPiece = chessboard.board[x][y];
         }
         

@@ -127,13 +127,9 @@ export class Board {
         for (var i = 0; i < enemies.length; i++) { 
             var enemy = enemies[i]; 
              
-            if (enemy.type != "cannon" && enemy.validateMove(generalPos[0], generalPos[1], board)) { 
+            if (enemy.validateMove(generalPos[0], generalPos[1], board)) { 
                 return true; 
             } 
-            // cannon cannot attack the target directly 
-            if (enemy.type == "cannon" && enemy.validAttack(generalPos[0], generalPos[1], board)) {
-                return true; 
-            }
         }
 
         return false; // default result
@@ -179,8 +175,6 @@ export class Board {
 
         copy[row][col] = null; 
         copy[newRow][newCol] = piece; 
-        // piece.row = newRow; 
-        // piece.col = newCol; 
 
         var flag = this.isCheck(color, copy); 
         
