@@ -90,6 +90,11 @@ export class Board {
     } 
 
     movePiece(piece, newRow, newCol) { 
+        // check if the new position is within the board 
+        if (newRow < 0 || newRow > 9 || newCol < 0 || newCol > 8) { 
+            return false; 
+        }
+
         // check if suiside
         if (this.isSuisideMove(piece, newRow, newCol, this.board)) {
             console.log("suiside!")
@@ -106,11 +111,6 @@ export class Board {
             return false; 
         }
 
-        // check if the new position is within the board 
-        if (newRow < 0 || newRow > 9 || newCol < 0 || newCol > 8) { 
-            return false; 
-        }
-
         // check if the piece can move to the new position 
         if (!piece.validateMove(newRow, newCol, this.board)) { 
             return false; 
@@ -119,30 +119,14 @@ export class Board {
         return true; 
     }
 
-    isCheck(color, board) { // is our general being checked?
-        var generalPos = this.findGeneral(color, board); 
-        var enemies = this.findEnemies(color, board);  
-
-        if (generalPos.length == 0) return; 
-        for (var i = 0; i < enemies.length; i++) { 
-            var enemy = enemies[i]; 
-             
-            if (enemy.validateMove(generalPos[0], generalPos[1], board)) { 
-                return true; 
-            } 
-        }
-
-        return false; // default result
-    }
-
     findEnemies(color, board) {
         var enemies = []; 
 
         for (let i=0; i<=9; i++) {
             for (let j=0; j<=8; j++) {
                 var piece = board[i][j]; 
-                if (piece == null) continue; 
-                if (piece.color == color) {
+                console.log(piece); 
+                if (piece != null && piece.color == color) {
                     enemies.push(board[i][j]); 
                 }
             }
@@ -165,6 +149,22 @@ export class Board {
         }
 
         return pos; 
+    }
+
+    isCheck(color, board) { // is our general being checked?
+        var generalPos = this.findGeneral(color, board); 
+        var enemies = this.findEnemies(color, board);  
+
+        if (generalPos.length == 0) return; 
+        for (var i = 0; i < enemies.length; i++) { 
+            var enemy = enemies[i]; 
+             
+            if (enemy.validateMove(generalPos[0], generalPos[1], board)) { 
+                return true; 
+            } 
+        }
+
+        return false; // default result
     }
 
     isSuisideMove(piece, newRow, newCol, board) {
@@ -200,46 +200,63 @@ export class Board {
         return copy; 
     }
 
-    isCheckMate() {
+    
+
+    getPossiblePos(piece) {
+        var row = piece.row; 
+        var col = piece.col; 
+        var dir = piece.dir;
+        var type = piece.type; 
+        
+        var possiblePos = []; 
+        if (type == "cannon" || type == "chariot" || type == "horse") {
+            console.log(type); 
+            for (let i=0; i<dir.length; i++) {
+                var len = dir[i].length; 
+                for (let j=0; j<len; j++) {
+                    var rowChange = dir[i][j][0]; 
+                    var colChange = dir[i][j][1]; 
+                    
+                    if (rowChange == 0 && colChange == 0) continue; 
+                    possiblePos.push([row + rowChange, col + colChange]); 
+                }
+            }
+        } else {
+            for (let i=0; i<dir.length; i++) {
+                var rowChange = dir[i][0]; 
+                var colChange = dir[i][1]; 
+
+                if (rowChange == 0 && colChange == 0) continue; 
+                possiblePos.push([row + rowChange, col + colChange]); 
+            }
+        }
+
+        return possiblePos; 
+    }
+
+    isCheckMate(color, board) {
         var enemies = this.findEnemies(color, board); 
         
         for (var i = 0; i < enemies.length; i++) { 
             var enemy = enemies[i]; 
-            var validPos = enemy.getValidPos(board); 
-            for (var j = 0; j < valid.length; j++) { 
-                if (!this.isSuisideMove(enemy, validPos[j][0], validPos[j][1], board)) { 
+            var possiblePos = this.getPossiblePos(enemy); 
+            for (var j = 0; j < possiblePos.length; j++) { 
+                var newRow = possiblePos[j][0]; 
+                var newCol = possiblePos[j][1]; 
+
+                if (newRow < 0 || newRow > 9) continue; 
+                if (newCol < 0 || newCol > 8) continue; 
+                if (!enemy.validateMove(newRow, newCol, board)) continue; 
+                if (!this.isSuisideMove(enemy, newRow, newCol, board)) { 
+                    console.log("Possible move: ")
+                    console.log(enemy); 
+                    console.log("at [" + enemy.row + ", " + enemy.col + "]"); 
+                    console.log("to [" + possiblePos[j][0] + ", " + possiblePos[j][1] + "]"); 
                     return false; 
                 } 
             } 
         }
 
         return true;
-    }
-
-    isGameOver() { 
-        // find the red general 
-        let redGeneral = null; 
-        for (let i=7; i<=9; i++) { 
-            for (let j=3; j<=5; j++) { 
-                if (this.board[i][j] != null && this.board[i][j].type == "general" && this.board[i][j].color == "red") { 
-                    redGeneral = this.board[i][j]; break;
-                } 
-            } 
-        }
-        // find the black general 
-        let blackGeneral = null; 
-        for (let i=0; i<=2; i++) { 
-            for (let j=3; j<=5; j++) { 
-                if (this.board[i][j] != null && this.board[i][j].type == "general" && this.board[i][j].color == "black") { 
-                    blackGeneral = this.board[i][j]; break; 
-                } 
-            } 
-        }
-
-        // check if both generals are still on the board 
-        if (redGeneral != null && blackGeneral != null) {
-             return false; // game is not over 
-        }  
-        return true; // game is over 
     }
 }
