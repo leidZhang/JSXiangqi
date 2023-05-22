@@ -389,7 +389,7 @@ export class Pawn extends ChessPiece {
 
         valid.push(this.dir[0]);
         if (this.color === "black") { 
-            if (this.row >= 5) {
+            if (this.row >= 5) { // black pass river
                 valid.push([0,-1], [0,1]);
                 this.dir[1] = [0,-1]; 
                 this.dir[2] = [0,1]; 
@@ -397,7 +397,7 @@ export class Pawn extends ChessPiece {
         } 
         
         if (this.color === "red") {
-            if (this.row <= 4) {
+            if (this.row <= 4) { // red pass river
                 valid.push([0,-1], [0,1]);
                 this.dir[1] = [0,-1]; 
                 this.dir[2] = [0,1]; 

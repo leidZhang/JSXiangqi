@@ -1,7 +1,17 @@
 import { Board } from './board.js'; 
 
 const chessboard = new Board(); 
-chessboard.initBoard(); 
+const situation = [["chariot","red","9","0"],["horse","red","9","1"],["elephant","red","9","2"],["advisor","red","9","3"],
+                   ["general","red","9","4"],["advisor","red","9","5"],["elephant","red","9","6"],["horse","red","9","7"],
+                   ["chariot","red","9","8"],["cannon","red","7","1"],["cannon","red","7","7"],["pawn","red","6","0"],
+                   ["pawn","red","6","2"],["pawn","red","6","4"],["pawn","red","6","6"],["pawn","red","6","8"],
+                   ["pawn","black","3","0"],["pawn","black","3","2"],["pawn","black","3","4"],["pawn","black","3","6"],
+                   ["pawn","black","3","8"],["cannon","black","2","1"],["cannon","black","2","7"],["chariot","black","0","0"],
+                   ["horse","black","0","1"],["elephant","black","0","2"],["advisor","black","0","3"],["general","black","0","4"],
+                   ["advisor","black","0","5"],["elephant","black","0","6"],["horse","black","0","7"],["chariot","black","0","8"]
+                ]; // by modifying this 2D array, we can set different endgames
+
+chessboard.initBoard(situation); 
 
 // set board shape
 (function() {
@@ -21,13 +31,14 @@ chessboard.initBoard();
     table.style.top="200px";
     table.style.left="280px";
     table.appendChild(tBody);
-    document.body.appendChild(table);
+    document.body.appendChild(table);    
 })();
 
 // generate board
 (function() {
     window.table = document.createElement("table");
     window.tBody = document.createElement("tBody");
+    
 
     for(var i=0;i<10;i++){
         window.row = tBody.insertRow(i);
@@ -156,6 +167,7 @@ function handleNewGame() {
 function handleResign() {
     var winner = (chessboard.turn === "red") ? "Black" : "Red";  
     turnText.innerHTML = winner + " Win!";
+    beginText.innerHTML = "Game End"; 
     chessboard.status = false; 
 }
 
