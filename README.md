@@ -6,7 +6,7 @@ This is a simple web-based xiangqi game that I created with JavaScript, HTML and
 - Click interface for moving the pieces.
 - Basic rules enforcement and checkmate detection.
 - A reset button to start a new game.
-- If one of the general is killed, the game will be stopped. 
+- The game will stop if one of the general is checkmated. 
 ## How to Play
 To start the game, click https://leidzhang.github.io/JSXiangqi/ or open index.html in VS Code and open with live server.
 To move a piece, click it and then click an empty or occupied intersection on the board. If the move is valid, the piece will be placed there. If not, the piece will stay at its original position.
