@@ -1,6 +1,8 @@
 import { Board } from './board.js'; 
+import { Record } from './record.js';
 
 const chessboard = new Board(); 
+const stack = []; // store movement
 const situation = [["chariot","red","9","0"],["horse","red","9","1"],["elephant","red","9","2"],["advisor","red","9","3"],
                    ["general","red","9","4"],["advisor","red","9","5"],["elephant","red","9","6"],["horse","red","9","7"],
                    ["chariot","red","9","8"],["cannon","red","7","1"],["cannon","red","7","7"],["pawn","red","6","0"],
@@ -198,9 +200,7 @@ function executeMove(newRow, newCol) {
     chessboard.board[newRow][newCol] = chessboard.curPiece; 
 
     var source = document.querySelector(`[data-x="${curRow}"][data-y="${curCol}"]`); 
-    console.log(source); 
     var tgt = document.querySelector(`[data-x="${newRow}"][data-y="${newCol}"]`); 
-    // var clickedPiece = document.getElementById(chessboard.curPiece.id);
     var clickedPiece = source.querySelector('div'); 
     var tgtPiece = tgt.children[0]; 
 
@@ -211,7 +211,8 @@ function executeMove(newRow, newCol) {
     tgt.appendChild(clickedPiece); 
     clickedPiece.style.backgroundColor = "#FAF0E6"; 
     
-    moveRecord(newRow, newCol); 
+    moveRecord(curRow, curCol, newRow, newCol, clickedPiece, tgtPiece);
+    console.log(stack);  
     switchSide(); // switch side 
 
     chessboard.curPiece.row = newRow; 
@@ -238,7 +239,7 @@ function executeMove(newRow, newCol) {
     initListeners(); 
 }
 
-function moveRecord(newRow, newCol) {
+function moveRecord(curRow, curCol, newRow, newCol, clickedPiece, tgtPiece) {
     var moveTable = document.getElementById("movesRecords"); 
     if (chessboard.turn === "red") {
         chessboard.turnCnt++; 
@@ -258,10 +259,14 @@ function moveRecord(newRow, newCol) {
         moveRow.appendChild(blackMoveContainer); 
         
         genRedRecord(newRow, newCol, redMoveContainer); 
+        var record = new Record(curRow, curCol, newRow, newCol, clickedPiece, tgtPiece); 
+        stack.push(record); 
     } else {
         var moveRow = document.querySelector(`[data-turn="${chessboard.turnCnt}"]`); 
         var blackMoveContainer = moveRow.getElementsByClassName("blackMove"); 
         genBlackRecord(newRow, newCol, blackMoveContainer); 
+        var record = new Record(curRow, curCol, newRow, newCol, clickedPiece, tgtPiece); 
+        stack.push(record); 
     }
 }
 
@@ -298,6 +303,8 @@ function genBlackRecord(newRow, newCol, blackMoveContainer) {
     }
 
     blackMoveContainer[0].innerHTML = text; 
+    
+    return text; 
 }
 
 function genRedRecord(newRow, newCol, redMoveContainer) {
@@ -333,6 +340,8 @@ function genRedRecord(newRow, newCol, redMoveContainer) {
     }
 
     redMoveContainer.innerHTML = text; // test red move
+
+    return text; 
 }
 
 // switch side

@@ -96,7 +96,6 @@ export class Board {
         for (let i=0; i<=9; i++) {
             for (let j=0; j<=8; j++) {
                 var piece = board[i][j]; 
-                console.log(piece); 
                 if (piece != null && piece.color == color) {
                     enemies.push(board[i][j]); 
                 }
@@ -179,7 +178,6 @@ export class Board {
         
         var possiblePos = []; 
         if (type == "cannon" || type == "chariot" || type == "horse") {
-            console.log(type); 
             for (let i=0; i<dir.length; i++) {
                 var len = dir[i].length; 
                 for (let j=0; j<len; j++) {
