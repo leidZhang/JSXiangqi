@@ -213,6 +213,7 @@ function executeMove(newRow, newCol) {
             var winner = (chessboard.turn == "red") ? "Black" : "Red"; 
             checkText.innerHTML = "Checkmate!";
             turnText.innerHTML = winner + " Win"; 
+            beginText.innerHTML = "Game End"; 
             chessboard.status = false; 
         }
     } else {
