@@ -100,11 +100,6 @@ export class Board {
             console.log("suiside!")
             return false; 
         }
-
-        // check if attacking the friendly
-        if (this.board[newRow][newCol] != null && this.board[newRow][newCol].color == piece.color) {
-            return false; 
-        }
         
         // check if the piece belongs to the board 
         if (!this.board[piece.row][piece.col] === piece) { 
