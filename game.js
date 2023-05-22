@@ -62,6 +62,7 @@ chessboard.initBoard();
     window.beginText = document.createElement("h1");
     beginText.style.display="inline";
     beginText.innerHTML="Game Start";
+    beginText.setAttribute("id", "beginText"); 
     
     beginText.style.position = "absolute";
     beginText.style.top = "200px";
@@ -185,8 +186,10 @@ function executeMove(newRow, newCol) {
     chessboard.board[newRow][newCol] = chessboard.curPiece; 
 
     var source = document.querySelector(`[data-x="${curRow}"][data-y="${curCol}"]`); 
+    console.log(source); 
     var tgt = document.querySelector(`[data-x="${newRow}"][data-y="${newCol}"]`); 
-    var clickedPiece = document.getElementById(chessboard.curPiece.id);
+    // var clickedPiece = document.getElementById(chessboard.curPiece.id);
+    var clickedPiece = source.querySelector('div'); 
     var tgtPiece = tgt.children[0]; 
 
     source.removeChild(clickedPiece);
@@ -208,12 +211,12 @@ function executeMove(newRow, newCol) {
     if (checkRed || checkBlack) {
         checkText.innerHTML = "Check!"; 
         var checkmateFlag = chessboard.isCheckMate(chessboard.turn, chessboard.board); 
-        console.log(chessboard.turn + " is checkmate: " + checkmateFlag); 
+        console.log(chessboard.turn + " is checkmated: " + checkmateFlag); 
         if (checkmateFlag) {
             var winner = (chessboard.turn == "red") ? "Black" : "Red"; 
             checkText.innerHTML = "Checkmate!";
             turnText.innerHTML = winner + " Win"; 
-            beginText.innerHTML = "Game End"; 
+            document.getElementById("beginText").innerHTML = "Game End"; 
             chessboard.status = false; 
         }
     } else {
@@ -392,9 +395,9 @@ function initListeners() {
 }
 
 // create pieces
-function createPieces(x, y, icon, color, id) {
+function createPieces(x, y, icon, color) {
     var div = document.createElement("div");
-    div.setAttribute("id", id); 
+    // div.setAttribute("id", id); 
     div.setAttribute("data-color", color === "red" ? "red" : "black");
     div.classList.add("pieces");
     div.classList.add(color === "red" ? "red" : "black");
@@ -408,7 +411,7 @@ function renderBoard() {
         for (let j=0; j<=8; j++) {
             var piece = chessboard.board[i][j]; 
             if (piece != null) {
-                createPieces(i, j, piece.icon, piece.color, piece.id); 
+                createPieces(i, j, piece.icon, piece.color); 
             }
         }
     }
