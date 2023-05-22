@@ -62,6 +62,7 @@ chessboard.initBoard();
     window.beginText = document.createElement("h1");
     beginText.style.display="inline";
     beginText.innerHTML="Game Start";
+    beginText.setAttribute("id", "beginText"); 
     
     beginText.style.position = "absolute";
     beginText.style.top = "200px";
@@ -213,7 +214,7 @@ function executeMove(newRow, newCol) {
             var winner = (chessboard.turn == "red") ? "Black" : "Red"; 
             checkText.innerHTML = "Checkmate!";
             turnText.innerHTML = winner + " Win"; 
-            beginText.innerHTML = "Game End"; 
+            document.getElementById("beginText").innerHTML = "Game End"; 
             chessboard.status = false; 
         }
     } else {

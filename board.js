@@ -195,8 +195,6 @@ export class Board {
         return copy; 
     }
 
-    
-
     getPossiblePos(piece) {
         var row = piece.row; 
         var col = piece.col; 
