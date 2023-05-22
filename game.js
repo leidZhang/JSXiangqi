@@ -196,27 +196,25 @@ function executeMove(newRow, newCol) {
     tgt.appendChild(clickedPiece); 
     clickedPiece.style.backgroundColor = "#FAF0E6"; 
     
-    if (chessboard.isGameOver()) {
-        chessboard.status = false; 
-        beginText.innerHTML="Game Over";
-         
-        if (clickedPiece.getAttribute("data-color") === "black") {
-            turnText.innerHTML = "Black Win";
-        } else {
-            turnText.innerHTML = "Red Win";
-        }
-        moveRecord(newRow, newCol); 
-    } else {
-        moveRecord(newRow, newCol); 
-        switchSide(); // switch side 
-    }
+    moveRecord(newRow, newCol); 
+    switchSide(); // switch side 
 
     chessboard.curPiece.row = newRow; 
     chessboard.curPiece.col = newCol; 
     chessboard.curPiece = null; 
 
-    if (chessboard.isCheck("red", chessboard.board) || chessboard.isCheck("black", chessboard.board)) {
+    var checkRed = chessboard.isCheck("red", chessboard.board); 
+    var checkBlack = chessboard.isCheck("black", chessboard.board); 
+    if (checkRed || checkBlack) {
         checkText.innerHTML = "Check!"; 
+        var checkmateFlag = chessboard.isCheckMate(chessboard.turn, chessboard.board); 
+        console.log(chessboard.turn + " is checkmate: " + checkmateFlag); 
+        if (checkmateFlag) {
+            var winner = (chessboard.turn == "red") ? "Black" : "Red"; 
+            checkText.innerHTML = "Checkmate!";
+            turnText.innerHTML = winner + " Win"; 
+            chessboard.status = false; 
+        }
     } else {
         checkText.innerHTML = ""; 
     }

@@ -8,7 +8,18 @@ class ChessPiece {
         this.row = row;
     }
 
+    isFriendly(newRow, newCol, board) {
+        var unknown = board[newRow][newCol]; 
+        if (unknown != null && unknown.color == this.color) {
+            return true; 
+        }
+
+        return false; 
+    }
+
     checkMove(newRow, newCol, valid, board) {
+        if (this.isFriendly(newRow, newCol, board)) return false; 
+
         const rowChange = newRow - this.row; 
         const colChange = newCol - this.col; // check position 
 
@@ -250,7 +261,6 @@ export class Cannon extends ChessPiece {
         }
 
         const right = this.colLimit("right", board);
-        console.log("rightLimit: " + right);  
         const rightBlock = (board[newRow][newCol] != null) ? right - 1 : right;
         for (let i=0; i<=rightBlock; i++) valid.push(this.dir[2][i]); 
         const rightTgt = this.findColTgt("right", board, right); 
