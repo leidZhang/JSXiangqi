@@ -1,6 +1,5 @@
 class ChessPiece {
-    constructor(id, color, type, icon, col, row) {
-        this.id = id; 
+    constructor(color, type, icon, col, row) {
         this.color = color;
         this.icon = icon;
         this.type = type;
@@ -27,19 +26,11 @@ class ChessPiece {
             return rowChange === validRowChange && colChange === validColChange; 
         }); 
     }
-
-    getId() {
-        return this.id; 
-    }
-
-    getColor() {
-        return this.color; 
-    }
 }
 
 export class General extends ChessPiece { 
-    constructor(id, color, icon, col, row) {
-        super(id, color, "general", icon, col, row); 
+    constructor(color, icon, col, row) {
+        super(color, "general", icon, col, row); 
         this.dir = [[1,0], [-1,0], [0,1], [0,-1], [0,0]]; // dir[4] is the attack movement
     }
     
@@ -95,8 +86,8 @@ export class General extends ChessPiece {
 }
 
 export class Chariot extends ChessPiece { 
-    constructor(id, color, icon, col, row) {
-        super(id, color, "chariot", icon, col, row); 
+    constructor(color, icon, col, row) {
+        super(color, "chariot", icon, col, row); 
         this.dir = [[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0]],
                     [[-1,0],[-2,0],[-3,0],[-4,0],[-5,0],[-6,0],[-7,0],[-8,0],[-9,0]],
                     [[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8]],
@@ -164,8 +155,8 @@ export class Chariot extends ChessPiece {
 }
 
 export class Cannon extends ChessPiece { 
-    constructor(id, color, icon, col, row) {
-        super(id, color, "cannon", icon, col, row); 
+    constructor(color, icon, col, row) {
+        super(color, "cannon", icon, col, row); 
         this.dir = [[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0]], // down
                     [[-1,0],[-2,0],[-3,0],[-4,0],[-5,0],[-6,0],[-7,0],[-8,0],[-9,0]], // up
                     [[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8]], // right
@@ -288,8 +279,8 @@ export class Cannon extends ChessPiece {
 }
 
 export class Advisor extends ChessPiece { 
-    constructor(id, color, icon, col, row) {
-        super(id, color, "advisor", icon, col, row); 
+    constructor(color, icon, col, row) {
+        super(color, "advisor", icon, col, row); 
         this.dir = [[1,1],[1,-1],[-1,1],[-1,-1]]; 
     }
 
@@ -315,8 +306,8 @@ export class Advisor extends ChessPiece {
 }
 
 export class Elephant extends ChessPiece {
-    constructor(id, color, icon, col, row) {
-        super(id, color, "elephant", icon, col, row); 
+    constructor(color, icon, col, row) {
+        super(color, "elephant", icon, col, row); 
         this.dir = [[-2,-2],[2,2],[2,-2],[-2,2]]; 
     }
 
@@ -352,8 +343,8 @@ export class Elephant extends ChessPiece {
 }
 
 export class Horse extends ChessPiece {
-    constructor(id, color, icon, col, row) {
-        super(id, color, "horse", icon, col, row); 
+    constructor(color, icon, col, row) {
+        super(color, "horse", icon, col, row); 
         this.dir = [[[2,1],[2,-1]],
                     [[-1,2],[1,2]],
                     [[-2,1],[-2,-1]],
@@ -384,8 +375,8 @@ export class Horse extends ChessPiece {
 }
 
 export class Pawn extends ChessPiece { 
-    constructor(id, color, icon, col, row) {
-        super(id, color, "pawn", icon, col, row);
+    constructor(color, icon, col, row) {
+        super(color, "pawn", icon, col, row);
         if (color == "black") {
             this.dir = [[1,0],[0,0],[0,0]]; 
         } else {
@@ -398,7 +389,7 @@ export class Pawn extends ChessPiece {
 
         valid.push(this.dir[0]);
         if (this.color === "black") { 
-            if (this.row >= 5) {
+            if (this.row >= 5) { // black pass river
                 valid.push([0,-1], [0,1]);
                 this.dir[1] = [0,-1]; 
                 this.dir[2] = [0,1]; 
@@ -406,7 +397,7 @@ export class Pawn extends ChessPiece {
         } 
         
         if (this.color === "red") {
-            if (this.row <= 4) {
+            if (this.row <= 4) { // red pass river
                 valid.push([0,-1], [0,1]);
                 this.dir[1] = [0,-1]; 
                 this.dir[2] = [0,1]; 

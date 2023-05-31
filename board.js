@@ -9,42 +9,47 @@ export class Board {
         this.turnCnt = 0; 
     }
 
-    initBoard() {
-        // create red pieces 
-        let redChariot1 = new Chariot(1, "red", "车", 0, 9); 
-        let redHorse1 = new Horse(2, "red", "马", 1, 9); 
-        let redElephant1 = new Elephant(3, "red", "相", 2, 9); 
-        let redAdvisor1 = new Advisor(4, "red", "仕", 3, 9); 
-        let redGeneral = new General(5, "red", "帅", 4, 9); 
-        let redAdvisor2 = new Advisor(6, "red", "仕", 5, 9); 
-        let redElephant2 = new Elephant(7, "red", "相", 6, 9); 
-        let redHorse2 = new Horse(8, "red", "马", 7, 9); 
-        let redChariot2 = new Chariot(9, "red", "车", 8, 9); 
-        let redCannon1 = new Cannon(10, "red", "炮", 1, 7); 
-        let redCannon2 = new Cannon(11, "red", "炮", 7, 7); 
-        let redPawn1 = new Pawn(12, "red", "兵", 0, 6); 
-        let redPawn2 = new Pawn(13, "red", "兵", 2, 6); 
-        let redPawn3 = new Pawn(14, "red", "兵", 4, 6); 
-        let redPawn4 = new Pawn(15, "red", "兵", 6, 6); 
-        let redPawn5 = new Pawn(16, "red", "兵", 8, 6); 
-        // create black pieces 
-        let blackChariot1 = new Chariot(17, "black", "車", 0, 0); 
-        let blackHorse1 = new Horse(18, "black", "馬", 1, 0); 
-        let blackElephant1 = new Elephant(19, "black", "象", 2, 0); 
-        let blackAdvisor1 = new Advisor(20, "black", "士", 3, 0); 
-        let blackGeneral = new General(21, "black", "将", 4, 0); 
-        let blackAdvisor2 = new Advisor(22, "black", "士", 5, 0); 
-        let blackElephant2 = new Elephant(23, "black", "象", 6, 0); 
-        let blackHorse2 = new Horse(24, "black", "馬", 7, 0); 
-        let blackChariot2 = new Chariot(25, "black", "車", 8, 0); 
-        let blackCannon1 = new Cannon(26, "black", "砲", 1, 2); 
-        let blackCannon2 = new Cannon(27, "black", "砲", 7, 2); 
-        let blackPawn1 = new Pawn(28, "black", "卒", 0, 3); 
-        let blackPawn2 = new Pawn(29, "black", "卒", 2, 3); 
-        let blackPawn3 = new Pawn(30, "black", "卒", 4, 3); 
-        let blackPawn4 = new Pawn(31, "black", "卒", 6, 3); 
-        let blackPawn5 = new Pawn(32, "black", "卒", 8, 3); 
+    placePiece(pieceInfo) {
+        let type = pieceInfo[0]; 
+        let color = pieceInfo[1]; 
+        let row = parseInt(pieceInfo[2]); 
+        let col = parseInt(pieceInfo[3]); 
 
+        switch (type) {
+            case "chariot": 
+                var icon = (color == "red") ? "车" : "車"; 
+                this.board[row][col] = new Chariot(color, icon, col, row); 
+                break; 
+            case "horse": 
+                var icon = (color == "red") ? "马" : "馬"; 
+                this.board[row][col] = new Horse(color, icon, col, row); 
+                break; 
+            case "elephant": 
+                var icon = (color == "red") ? "相" : "象"; 
+                this.board[row][col] = new Elephant(color, icon, col, row); 
+                break; 
+            case "advisor": 
+                var icon = (color == "red") ? "仕" : "士"; 
+                this.board[row][col] = new Advisor(color, icon, col, row); 
+                break; 
+            case "general": 
+                var icon = (color == "red") ? "帅" : "将"; 
+                this.board[row][col] = new General(color, icon, col, row); 
+                break; 
+            case "cannon": 
+                var icon = (color == "red") ? "炮" : "砲"; 
+                this.board[row][col] = new Cannon(color, icon, col, row); 
+                break; 
+            case "pawn": 
+                var icon = (color == "red") ? "兵" : "卒";
+                this.board[row][col] = new Pawn(color, icon, col, row); 
+                break; 
+            default: 
+                break; 
+        }
+    }
+
+    initBoard(situation) {
         // generate board
         for (let i=0; i<10; i++) { 
             this.board[i] = []; // create a row 
@@ -53,40 +58,11 @@ export class Board {
             }
         }
 
-        // fill the board red side
-        this.board[9][4] = redGeneral; 
-        this.board[9][3] = redAdvisor1; 
-        this.board[9][5] = redAdvisor2; 
-        this.board[9][2] = redElephant1; 
-        this.board[9][6] = redElephant2; 
-        this.board[9][1] = redHorse1; 
-        this.board[9][7] = redHorse2; 
-        this.board[9][0] = redChariot1; 
-        this.board[9][8] = redChariot2; 
-        this.board[7][1] = redCannon1; 
-        this.board[7][7] = redCannon2;
-        this.board[6][0] = redPawn1; 
-        this.board[6][2] = redPawn2; 
-        this.board[6][4] = redPawn3; 
-        this.board[6][6] = redPawn4; 
-        this.board[6][8] = redPawn5;
-        // fill the board black side 
-        this.board[0][4] = blackGeneral; 
-        this.board[0][3] = blackAdvisor1; 
-        this.board[0][5] = blackAdvisor2; 
-        this.board[0][2] = blackElephant1; 
-        this.board[0][6] = blackElephant2; 
-        this.board[0][1] = blackHorse1; 
-        this.board[0][7] = blackHorse2; 
-        this.board[0][0] = blackChariot1; 
-        this.board[0][8] = blackChariot2; 
-        this.board[2][1] = blackCannon1; 
-        this.board[2][7] = blackCannon2;
-        this.board[3][0] = blackPawn1; 
-        this.board[3][2] = blackPawn2; 
-        this.board[3][4] = blackPawn3; 
-        this.board[3][6] = blackPawn4; 
-        this.board[3][8] = blackPawn5;
+        situation.forEach((pieceInfo) => {
+            this.placePiece(pieceInfo); 
+        })
+        
+        console.log(this.board); 
     } 
 
     movePiece(piece, newRow, newCol) { 
@@ -98,11 +74,6 @@ export class Board {
         // check if suiside
         if (this.isSuisideMove(piece, newRow, newCol, this.board)) {
             console.log("suiside!")
-            return false; 
-        }
-
-        // check if attacking the friendly
-        if (this.board[newRow][newCol] != null && this.board[newRow][newCol].color == piece.color) {
             return false; 
         }
         
@@ -125,7 +96,6 @@ export class Board {
         for (let i=0; i<=9; i++) {
             for (let j=0; j<=8; j++) {
                 var piece = board[i][j]; 
-                console.log(piece); 
                 if (piece != null && piece.color == color) {
                     enemies.push(board[i][j]); 
                 }
@@ -200,8 +170,6 @@ export class Board {
         return copy; 
     }
 
-    
-
     getPossiblePos(piece) {
         var row = piece.row; 
         var col = piece.col; 
@@ -210,7 +178,6 @@ export class Board {
         
         var possiblePos = []; 
         if (type == "cannon" || type == "chariot" || type == "horse") {
-            console.log(type); 
             for (let i=0; i<dir.length; i++) {
                 var len = dir[i].length; 
                 for (let j=0; j<len; j++) {
@@ -248,7 +215,7 @@ export class Board {
                 if (newCol < 0 || newCol > 8) continue; 
                 if (!enemy.validateMove(newRow, newCol, board)) continue; 
                 if (!this.isSuisideMove(enemy, newRow, newCol, board)) { 
-                    console.log("Possible move: ")
+                    console.log("Possible solution: "); 
                     console.log(enemy); 
                     console.log("at [" + enemy.row + ", " + enemy.col + "]"); 
                     console.log("to [" + possiblePos[j][0] + ", " + possiblePos[j][1] + "]"); 

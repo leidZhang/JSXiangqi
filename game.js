@@ -1,7 +1,22 @@
 import { Board } from './board.js'; 
+import { Record } from './record.js';
 
 const chessboard = new Board(); 
-chessboard.initBoard(); 
+const stack = []; // store movement
+
+// const layoutString = situation.map(row => row.join(',')).join(';');
+// console.log(layoutString);
+
+const situation = [["chariot","red","9","0"],["horse","red","9","1"],["elephant","red","9","2"],["advisor","red","9","3"],
+                   ["general","red","9","4"],["advisor","red","9","5"],["elephant","red","9","6"],["horse","red","9","7"],
+                   ["chariot","red","9","8"],["cannon","red","7","1"],["cannon","red","7","7"],["pawn","red","6","0"],
+                   ["pawn","red","6","2"],["pawn","red","6","4"],["pawn","red","6","6"],["pawn","red","6","8"],
+                   ["pawn","black","3","0"],["pawn","black","3","2"],["pawn","black","3","4"],["pawn","black","3","6"],
+                   ["pawn","black","3","8"],["cannon","black","2","1"],["cannon","black","2","7"],["chariot","black","0","0"],
+                   ["horse","black","0","1"],["elephant","black","0","2"],["advisor","black","0","3"],["general","black","0","4"],
+                   ["advisor","black","0","5"],["elephant","black","0","6"],["horse","black","0","7"],["chariot","black","0","8"]
+                ]; // by modifying this 2D array, we can set different endgames
+chessboard.initBoard(situation); 
 
 // set board shape
 (function() {
@@ -21,13 +36,14 @@ chessboard.initBoard();
     table.style.top="200px";
     table.style.left="280px";
     table.appendChild(tBody);
-    document.body.appendChild(table);
+    document.body.appendChild(table);    
 })();
 
 // generate board
 (function() {
     window.table = document.createElement("table");
     window.tBody = document.createElement("tBody");
+    
 
     for(var i=0;i<10;i++){
         window.row = tBody.insertRow(i);
@@ -62,6 +78,7 @@ chessboard.initBoard();
     window.beginText = document.createElement("h1");
     beginText.style.display="inline";
     beginText.innerHTML="Game Start";
+    beginText.setAttribute("id", "beginText"); 
     
     beginText.style.position = "absolute";
     beginText.style.top = "200px";
@@ -155,6 +172,7 @@ function handleNewGame() {
 function handleResign() {
     var winner = (chessboard.turn === "red") ? "Black" : "Red";  
     turnText.innerHTML = winner + " Win!";
+    beginText.innerHTML = "Game End"; 
     chessboard.status = false; 
 }
 
@@ -186,7 +204,7 @@ function executeMove(newRow, newCol) {
 
     var source = document.querySelector(`[data-x="${curRow}"][data-y="${curCol}"]`); 
     var tgt = document.querySelector(`[data-x="${newRow}"][data-y="${newCol}"]`); 
-    var clickedPiece = document.getElementById(chessboard.curPiece.id);
+    var clickedPiece = source.querySelector('div'); 
     var tgtPiece = tgt.children[0]; 
 
     source.removeChild(clickedPiece);
@@ -196,7 +214,8 @@ function executeMove(newRow, newCol) {
     tgt.appendChild(clickedPiece); 
     clickedPiece.style.backgroundColor = "#FAF0E6"; 
     
-    moveRecord(newRow, newCol); 
+    moveRecord(curRow, curCol, newRow, newCol, clickedPiece, tgtPiece);
+    console.log(stack);  
     switchSide(); // switch side 
 
     chessboard.curPiece.row = newRow; 
@@ -208,11 +227,12 @@ function executeMove(newRow, newCol) {
     if (checkRed || checkBlack) {
         checkText.innerHTML = "Check!"; 
         var checkmateFlag = chessboard.isCheckMate(chessboard.turn, chessboard.board); 
-        console.log(chessboard.turn + " is checkmate: " + checkmateFlag); 
+        console.log(chessboard.turn + " is checkmated: " + checkmateFlag); 
         if (checkmateFlag) {
             var winner = (chessboard.turn == "red") ? "Black" : "Red"; 
             checkText.innerHTML = "Checkmate!";
             turnText.innerHTML = winner + " Win"; 
+            document.getElementById("beginText").innerHTML = "Game End"; 
             chessboard.status = false; 
         }
     } else {
@@ -222,7 +242,7 @@ function executeMove(newRow, newCol) {
     initListeners(); 
 }
 
-function moveRecord(newRow, newCol) {
+function moveRecord(curRow, curCol, newRow, newCol, clickedPiece, tgtPiece) {
     var moveTable = document.getElementById("movesRecords"); 
     if (chessboard.turn === "red") {
         chessboard.turnCnt++; 
@@ -242,10 +262,14 @@ function moveRecord(newRow, newCol) {
         moveRow.appendChild(blackMoveContainer); 
         
         genRedRecord(newRow, newCol, redMoveContainer); 
+        var record = new Record(curRow, curCol, newRow, newCol, clickedPiece, tgtPiece); 
+        stack.push(record); 
     } else {
         var moveRow = document.querySelector(`[data-turn="${chessboard.turnCnt}"]`); 
         var blackMoveContainer = moveRow.getElementsByClassName("blackMove"); 
         genBlackRecord(newRow, newCol, blackMoveContainer); 
+        var record = new Record(curRow, curCol, newRow, newCol, clickedPiece, tgtPiece); 
+        stack.push(record); 
     }
 }
 
@@ -282,6 +306,8 @@ function genBlackRecord(newRow, newCol, blackMoveContainer) {
     }
 
     blackMoveContainer[0].innerHTML = text; 
+    
+    return text; 
 }
 
 function genRedRecord(newRow, newCol, redMoveContainer) {
@@ -317,6 +343,8 @@ function genRedRecord(newRow, newCol, redMoveContainer) {
     }
 
     redMoveContainer.innerHTML = text; // test red move
+
+    return text; 
 }
 
 // switch side
@@ -391,9 +419,9 @@ function initListeners() {
 }
 
 // create pieces
-function createPieces(x, y, icon, color, id) {
+function createPieces(x, y, icon, color) {
     var div = document.createElement("div");
-    div.setAttribute("id", id); 
+    // div.setAttribute("id", id); 
     div.setAttribute("data-color", color === "red" ? "red" : "black");
     div.classList.add("pieces");
     div.classList.add(color === "red" ? "red" : "black");
@@ -407,7 +435,7 @@ function renderBoard() {
         for (let j=0; j<=8; j++) {
             var piece = chessboard.board[i][j]; 
             if (piece != null) {
-                createPieces(i, j, piece.icon, piece.color, piece.id); 
+                createPieces(i, j, piece.icon, piece.color); 
             }
         }
     }
