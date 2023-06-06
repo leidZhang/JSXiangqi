@@ -12,6 +12,19 @@ To start the game, click https://leidzhang.github.io/JSXiangqi/ or open index.ht
 To move a piece, click it and then click an empty or occupied intersection on the board. If the move is valid, the piece will be placed there. If not, the piece will stay at its original position.
 The goal of the game is to checkmate the opponent’s general, who resides in a 3x3 palace at the center of the back rank.
 To start a new game, click on the "New Game" button.
+## Project Preview
+### Initial pieces layout. 
+The chessboard is assembled with two stacked tables, one for the visible grid and one for the invisible nodes, since the pieces are placed on the intersections of the grid lines. the gray table on the right records the moves of both players.
+<img src="/images/opening.png" />
+
+### Check Detection 
+The red cannon is checking the black general, but the black side can use chariot to kill the cannon to rescue the general, so the red side did not win. 
+<img src="/images/check_detection.png" />
+
+### Checkmate Detection
+Now the black general is checked by a red chariot, and there is no way that a black piece can rescue the general, so the black side is checkmated and the red side wins the game. 
+<img src="/images/checkmate.png" />
+
 ## License
 This project is licensed under the Apache-2.0 license - see the LICENSE file for details.
 ## Feedback
