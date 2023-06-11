@@ -1,6 +1,6 @@
 # JSXiangqi
 ## Introduction
-This is a simple web-based xiangqi game that I created with JavaScript, HTML and CSS. Xiangqi is a traditional Chinese board game that is similar to chess, but with some unique rules and pieces. You can play this game against a friend on the same device, the function of against a basic AI opponent is developing. 
+I created This simple web-based Xiangqi game with JavaScript, HTML, and CSS. Xiangqi is a traditional Chinese board game that is similar to chess but with some unique rules and pieces. You can play this game against a friend on the same device, and the function against a basic AI opponent is developing.
 ## Features
 - A 9x10 board with 32 pieces representing two armies: red and black.
 - Click interface for moving the pieces.
