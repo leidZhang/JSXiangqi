@@ -113,3 +113,12 @@ div.red {
 div.black {
     color: black; 
 }
+
+.endgame-index {
+    margin-left: 400px;
+}
+
+#endgame-selector {
+    width: 500px;
+    height: 30px;
+}

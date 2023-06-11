@@ -1,41 +1,14 @@
 import { Board } from './board.js'; 
 import { Record } from './record.js';
-import { getEndgameArr } from './service.js'
+import { fetchData, genDropDown } from './api.js';
 
 const chessboard = new Board(); 
 const stack = []; // store movement
 
-
-// const layoutString = situation.map(row => row.join(',')).join(';');
-// console.log(layoutString);
-
-async function fetchData() {
-    try {
-        const response = await axios.get('http://localhost:3000/api/endgames/1');
-        const data = response.data;  
-
-        return getEndgameArr(data);  
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        
-    }
-}
-
-try {
-    const arr = await fetchData();  
-    chessboard.initBoard(arr);
-} catch {
-    const situation = [["chariot","red","9","0"],["horse","red","9","1"],["elephant","red","9","2"],["advisor","red","9","3"],
-                   ["general","red","9","4"],["advisor","red","9","5"],["elephant","red","9","6"],["horse","red","9","7"],
-                   ["chariot","red","9","8"],["cannon","red","7","1"],["cannon","red","7","7"],["pawn","red","6","0"],
-                   ["pawn","red","6","2"],["pawn","red","6","4"],["pawn","red","6","6"],["pawn","red","6","8"],
-                   ["pawn","black","3","0"],["pawn","black","3","2"],["pawn","black","3","4"],["pawn","black","3","6"],
-                   ["pawn","black","3","8"],["cannon","black","2","1"],["cannon","black","2","7"],["chariot","black","0","0"],
-                   ["horse","black","0","1"],["elephant","black","0","2"],["advisor","black","0","3"],["general","black","0","4"],
-                   ["advisor","black","0","5"],["elephant","black","0","6"],["horse","black","0","7"],["chariot","black","0","8"]
-                ]; // by modifying this 2D array, we can set different endgames
-    chessboard.initBoard(situation); 
-}
+const index = document.getElementsByClassName("endgame-index")[0].innerHTML; 
+const situation = await fetchData(2);
+genDropDown(); 
+chessboard.initBoard(situation); 
 
 // set board shape
 (function() {

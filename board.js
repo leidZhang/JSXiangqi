@@ -62,7 +62,7 @@ export class Board {
             this.placePiece(pieceInfo); 
         })
         
-        console.log(this.board); 
+        // console.log(this.board); 
     } 
 
     movePiece(piece, newRow, newCol) { 
