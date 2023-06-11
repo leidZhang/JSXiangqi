@@ -8,7 +8,7 @@ This is a simple web-based xiangqi game that I created with JavaScript, HTML and
 - A reset button to start a new game.
 - The game will stop if one of the general is checkmated. 
 ## How to Play
-To start the game with Node.js backend, run npm install and npm start in the terminal, then open http://localhost:3000/ in your browser. 
+To start the game with Node.js backend, run npm install and npm start in the terminal, then open VS Code and open with live server. 
 To start the game without Node.js backend, click https://leidzhang.github.io/JSXiangqi/.
 To move a piece, click it and then click an empty or occupied intersection on the board. If the move is valid, the piece will be placed there. If not, the piece will stay at its original position.
 The goal of the game is to checkmate the opponent’s general, who resides in a 3x3 palace at the center of the back rank.
