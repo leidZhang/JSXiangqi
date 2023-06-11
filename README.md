@@ -25,6 +25,12 @@ The red cannon is checking the black general, but the black side can use chariot
 Now the black general is checked by a red chariot, and there is no way that a black piece can rescue the general, so the black side is checkmated and the red side wins the game. 
 <img src="/images/checkmate.png" />
 
+### Endgame Selection
+By choosing the options of the dropdown menu, various endgames on the board can be selected.
+<img src="/images/endgame1.png" />
+
+<img src="/images/endgame2.png" />
+
 ## License
 This project is licensed under the Apache-2.0 license - see the LICENSE file for details.
 ## Feedback
