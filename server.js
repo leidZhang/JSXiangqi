@@ -43,7 +43,7 @@ app.get('/api/endgames/id=:id', (req, res) => {
     });
 });
 
-app.get('api/endgames/titles', (req, res) => {
+app.get('/api/endgames/titles', (req, res) => {
     const query = 'SELECT title FROM endgames'; 
     connection.query(query, (err, results) => {
         if (err) {

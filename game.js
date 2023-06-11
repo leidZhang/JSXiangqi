@@ -1,17 +1,34 @@
 import { Board } from './board.js'; 
 import { Record } from './record.js';
-import { fetchData, genDropDown } from './api.js';
+import { fetchEndgame, fetchList } from './api.js';
 
 const chessboard = new Board(); 
 const stack = []; // store movement
 
-const index = document.getElementsByClassName("endgame-index")[0].innerHTML; 
-const situation = await fetchData(2);
-genDropDown(); 
+const situation = await fetchEndgame(1);
 chessboard.initBoard(situation); 
+
+fetchList(); 
+const select = document.getElementById("endgame-selector"); 
+select.addEventListener("change", async function() { 
+    try {
+        var index = select.value; 
+        var endgame = await fetchEndgame(index); 
+        chessboard.initBoard(endgame); 
+        deletBoard(); 
+        renderBoard(); 
+        initListeners();
+    } catch {
+        console.error(error);
+    }
+});
 
 // set board shape
 (function() {
+    window.main = document.createElement("div"); 
+    main.setAttribute("id", "mainContainer"); 
+    document.body.appendChild(main); 
+
     window.table = document.createElement("table");
     window.tBody = document.createElement("tBody");
     table.classList.add("board");
@@ -28,7 +45,7 @@ chessboard.initBoard(situation);
     table.style.top="200px";
     table.style.left="280px";
     table.appendChild(tBody);
-    document.body.appendChild(table);    
+    main.appendChild(table);    
 })();
 
 // generate board
@@ -52,7 +69,7 @@ chessboard.initBoard(situation);
     table.style.position="absolute";
     table.style.top="170px";
     table.style.left="250px";
-    document.body.appendChild(table);
+    main.appendChild(table);
 })(); 
 
 // game start
@@ -170,11 +187,12 @@ function handleResign() {
 
 // click board
 function clickBoard(event) {
+    console.log("click board"); 
     if(chessboard.status) { 
         if(chessboard.curPiece) {
             var x = parseInt(this.getAttribute("data-x"));
             var y = parseInt(this.getAttribute("data-y"));
-            
+
             // attempt to move the piece
             var res = chessboard.movePiece(chessboard.curPiece, x, y);
             if (res) {
@@ -352,11 +370,13 @@ function switchSide() {
 
 // choose piece
 function choosePiece(event) {
+    console.log("choose"); 
     if (chessboard.status) {
         // select piece
         var clickedPiece = event.target;
+        console.log(clickedPiece); 
         if (chessboard.turn != clickedPiece.getAttribute("data-color")) return; // avoid control opponent's pieces
-
+        console.log(clickedPiece); 
         if (clickedPiece.classList.contains("pieces")) {
             var x = parseInt(clickedPiece.parentNode.getAttribute("data-x"));
             var y = parseInt(clickedPiece.parentNode.getAttribute("data-y"));
@@ -377,6 +397,7 @@ function choosePiece(event) {
 
 // cancel selection 
 function cancelPiece(event) {
+    console.log("cancel"); 
     var clickedPiece = event.target;
     var selectedPiece = null; 
 
@@ -420,6 +441,17 @@ function createPieces(x, y, icon, color) {
     div.appendChild(document.createTextNode(icon));
     tBody.rows[x].cells[y].appendChild(div);
     return div;
+}
+
+function deletBoard() {
+    for (let i=0; i<=9; i++) {
+        for (let j=0; j<=8; j++) {
+            var piece = tBody.rows[i].cells[j].querySelector("div"); 
+            if (piece != null) {
+                piece.remove(); 
+            } 
+        }
+    }
 }
 
 function renderBoard() {
