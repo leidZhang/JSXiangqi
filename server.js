@@ -25,10 +25,10 @@ app.use((req, res, next) => {
     next();
   });
 
-app.get('/api/endgames/:id', (req, res) => {
+app.get('/api/endgames/id=:id', (req, res) => {
     const id = req.params.id;
     const query = 'SELECT * FROM endgames WHERE id = ?';
-    connection.query(query, [1], (err, results) => {
+    connection.query(query, [id], (err, results) => {
         if (err) {
             console.error('Error executing MySQL query: ', err);
             res.status(500).json({ error: 'Error executing MySQL query' });
@@ -42,6 +42,18 @@ app.get('/api/endgames/:id', (req, res) => {
         }
     });
 });
+
+app.get('/api/endgames/titles', (req, res) => {
+    const query = 'SELECT title FROM endgames'; 
+    connection.query(query, (err, results) => {
+        if (err) {
+            console.error('Error executing MySQL query: ', err);
+            res.status(500).json({ error: 'Error executing MySQL query' }); 
+        } else {
+            res.json(results); 
+        }
+    })
+}); 
 
 app.listen(3000, () => {
   console.log('Server is running on port 3000');

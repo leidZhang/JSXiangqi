@@ -1,44 +1,34 @@
 import { Board } from './board.js'; 
 import { Record } from './record.js';
-import { getEndgameArr } from './service.js'
+import { fetchEndgame, fetchList } from './api.js';
 
 const chessboard = new Board(); 
 const stack = []; // store movement
 
+const situation = await fetchEndgame(1);
+chessboard.initBoard(situation); 
 
-// const layoutString = situation.map(row => row.join(',')).join(';');
-// console.log(layoutString);
-
-async function fetchData() {
+fetchList(); 
+const select = document.getElementById("endgame-selector"); 
+select.addEventListener("change", async function() { 
     try {
-        const response = await axios.get('http://localhost:3000/api/endgames/1');
-        const data = response.data;  
-
-        return getEndgameArr(data);  
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        
+        var index = select.value; 
+        var endgame = await fetchEndgame(index); 
+        chessboard.initBoard(endgame); 
+        deletBoard(); 
+        renderBoard(); 
+        initListeners();
+    } catch {
+        console.error(error);
     }
-}
-
-try {
-    const arr = await fetchData();  
-    chessboard.initBoard(arr);
-} catch {
-    const situation = [["chariot","red","9","0"],["horse","red","9","1"],["elephant","red","9","2"],["advisor","red","9","3"],
-                   ["general","red","9","4"],["advisor","red","9","5"],["elephant","red","9","6"],["horse","red","9","7"],
-                   ["chariot","red","9","8"],["cannon","red","7","1"],["cannon","red","7","7"],["pawn","red","6","0"],
-                   ["pawn","red","6","2"],["pawn","red","6","4"],["pawn","red","6","6"],["pawn","red","6","8"],
-                   ["pawn","black","3","0"],["pawn","black","3","2"],["pawn","black","3","4"],["pawn","black","3","6"],
-                   ["pawn","black","3","8"],["cannon","black","2","1"],["cannon","black","2","7"],["chariot","black","0","0"],
-                   ["horse","black","0","1"],["elephant","black","0","2"],["advisor","black","0","3"],["general","black","0","4"],
-                   ["advisor","black","0","5"],["elephant","black","0","6"],["horse","black","0","7"],["chariot","black","0","8"]
-                ]; // by modifying this 2D array, we can set different endgames
-    chessboard.initBoard(situation); 
-}
+});
 
 // set board shape
 (function() {
+    window.main = document.createElement("div"); 
+    main.setAttribute("id", "mainContainer"); 
+    document.body.appendChild(main); 
+
     window.table = document.createElement("table");
     window.tBody = document.createElement("tBody");
     table.classList.add("board");
@@ -55,7 +45,7 @@ try {
     table.style.top="200px";
     table.style.left="280px";
     table.appendChild(tBody);
-    document.body.appendChild(table);    
+    main.appendChild(table);    
 })();
 
 // generate board
@@ -79,7 +69,7 @@ try {
     table.style.position="absolute";
     table.style.top="170px";
     table.style.left="250px";
-    document.body.appendChild(table);
+    main.appendChild(table);
 })(); 
 
 // game start
@@ -197,11 +187,12 @@ function handleResign() {
 
 // click board
 function clickBoard(event) {
+    console.log("click board"); 
     if(chessboard.status) { 
         if(chessboard.curPiece) {
             var x = parseInt(this.getAttribute("data-x"));
             var y = parseInt(this.getAttribute("data-y"));
-            
+
             // attempt to move the piece
             var res = chessboard.movePiece(chessboard.curPiece, x, y);
             if (res) {
@@ -379,11 +370,13 @@ function switchSide() {
 
 // choose piece
 function choosePiece(event) {
+    console.log("choose"); 
     if (chessboard.status) {
         // select piece
         var clickedPiece = event.target;
+        console.log(clickedPiece); 
         if (chessboard.turn != clickedPiece.getAttribute("data-color")) return; // avoid control opponent's pieces
-
+        console.log(clickedPiece); 
         if (clickedPiece.classList.contains("pieces")) {
             var x = parseInt(clickedPiece.parentNode.getAttribute("data-x"));
             var y = parseInt(clickedPiece.parentNode.getAttribute("data-y"));
@@ -404,6 +397,7 @@ function choosePiece(event) {
 
 // cancel selection 
 function cancelPiece(event) {
+    console.log("cancel"); 
     var clickedPiece = event.target;
     var selectedPiece = null; 
 
@@ -447,6 +441,17 @@ function createPieces(x, y, icon, color) {
     div.appendChild(document.createTextNode(icon));
     tBody.rows[x].cells[y].appendChild(div);
     return div;
+}
+
+function deletBoard() {
+    for (let i=0; i<=9; i++) {
+        for (let j=0; j<=8; j++) {
+            var piece = tBody.rows[i].cells[j].querySelector("div"); 
+            if (piece != null) {
+                piece.remove(); 
+            } 
+        }
+    }
 }
 
 function renderBoard() {
